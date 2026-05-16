@@ -1,15 +1,15 @@
-import { z } from 'astro/zod';
+import { z } from "astro/zod";
 import {
   formatTopicSlugCollisions,
   getTopicSlugCollisions,
   tagToSlug,
-} from './tags';
+} from "./tags";
 
 const trimmed = z.string().trim().min(1);
 
 const yearSchema = trimmed.refine(isValidYear, {
   message:
-    'Year must be a four-digit year, a short range (e.g. 2022-23), or a range ending in present',
+    "Year must be a four-digit year, a short range (e.g. 2022-23), or a range ending in present",
 });
 
 const readTimeSchema = trimmed
@@ -19,7 +19,7 @@ const readTimeSchema = trimmed
   .transform(normalizeReadTime);
 
 const tagSchema = trimmed.refine((tag) => tagToSlug(tag).length > 0, {
-  message: 'Tag must contain at least one letter or number',
+  message: "Tag must contain at least one letter or number",
 });
 
 export const postSchema = z.object({
@@ -33,7 +33,7 @@ export const postSchema = z.object({
       const collisions = getTopicSlugCollisions(tags);
       if (collisions.length === 0) return;
       ctx.addIssue({
-        code: 'custom',
+        code: "custom",
         message: `Tags share the same topic slug: ${formatTopicSlugCollisions(collisions)}`,
       });
     }),

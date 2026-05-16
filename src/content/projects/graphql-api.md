@@ -1,6 +1,6 @@
 ---
 name: GraphQL API
-year: '2022'
+year: "2022"
 kind: API
 summary: Public read-only GraphQL API over production NBA ELT data on AWS Lambda. Deprecated August 2022 in favor of the REST API.
 tags: [GraphQL, Python, Terraform]

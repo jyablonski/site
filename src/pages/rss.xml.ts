@@ -1,15 +1,15 @@
-import rss from '@astrojs/rss';
-import { getCollection } from 'astro:content';
-import { site } from '../data/site';
-import { mapPostEntry } from '../lib/content';
+import rss from "@astrojs/rss";
+import { getCollection } from "astro:content";
+import { site } from "../data/site";
+import { mapPostEntry } from "../lib/content";
 import {
   getPostHref,
   sortPostsByDateDesc,
   filterPublishedPosts,
-} from '../lib/posts';
+} from "../lib/posts";
 
 export async function GET(context: { site: string | undefined }) {
-  const entries = await getCollection('posts');
+  const entries = await getCollection("posts");
   const posts = sortPostsByDateDesc(
     filterPublishedPosts(entries.map(mapPostEntry)),
   );

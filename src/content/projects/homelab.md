@@ -1,6 +1,6 @@
 ---
 name: Homelab
-year: '2025 - present'
+year: "2025 - present"
 kind: Infrastructure
 summary: K3s cluster managed with Helmfile for Home Assistant, monitoring, and personal services on Longhorn storage.
 tags: [Kubernetes, Helm, Helmfile]

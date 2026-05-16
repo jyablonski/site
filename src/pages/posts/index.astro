@@ -1,21 +1,21 @@
 ---
-import PostRow from '../../components/PostRow.astro';
-import TopicChips from '../../components/TopicChips.astro';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { loadPublishedPosts } from '../../lib/content';
-import { filterPostsByTopic } from '../../lib/posts';
-import { formatPageListMeta, SORT_BY_DATE } from '../../lib/page-meta';
-import { getTopicLinks } from '../../lib/tags';
+import PostRow from "../../components/PostRow.astro";
+import TopicChips from "../../components/TopicChips.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadPublishedPosts } from "../../lib/content";
+import { filterPostsByTopic } from "../../lib/posts";
+import { formatPageListMeta, SORT_BY_DATE } from "../../lib/page-meta";
+import { getTopicLinks } from "../../lib/tags";
 
-const activeTopic = 'all';
+const activeTopic = "all";
 
 const allPosts = await loadPublishedPosts();
 const posts = filterPostsByTopic(allPosts, activeTopic);
 const topics = getTopicLinks(allPosts);
 const pageMeta = formatPageListMeta(
   posts.length,
-  'post',
-  'posts',
+  "post",
+  "posts",
   SORT_BY_DATE,
 );
 ---

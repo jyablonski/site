@@ -15,5 +15,5 @@ export function formatPageListMeta(
   return `${formatListCount(count, singular, plural)} · ${sortLabel}`;
 }
 
-export const SORT_BY_DATE = 'sorted by date';
-export const SORT_BY_YEAR = 'sorted by year';
+export const SORT_BY_DATE = "sorted by date";
+export const SORT_BY_YEAR = "sorted by year";

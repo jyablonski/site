@@ -1,14 +1,14 @@
 ---
-import ProjectRow from '../components/ProjectRow.astro';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { homeContent } from '../data/site';
-import { site } from '../data/site';
-import { loadProjects } from '../lib/content';
-import { getFeaturedProjects } from '../lib/projects';
+import ProjectRow from "../components/ProjectRow.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { homeContent } from "../data/site";
+import { site } from "../data/site";
+import { loadProjects } from "../lib/content";
+import { getFeaturedProjects } from "../lib/projects";
 
 const projects = await loadProjects();
 const featured = getFeaturedProjects(projects, 3);
-const stackLine = homeContent.stack.join(' · ');
+const stackLine = homeContent.stack.join(" · ");
 ---
 
 <BaseLayout title={site.name} active="home">

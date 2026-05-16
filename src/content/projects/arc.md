@@ -1,6 +1,6 @@
 ---
 name: arc
-year: '2026 - present'
+year: "2026 - present"
 kind: CLI tool
 summary: Personal CLI for system management and maintenance on Arch Linux. One interface for ops tasks with safer defaults and consistent flags.
 tags: [Go, Linux]

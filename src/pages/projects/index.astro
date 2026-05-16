@@ -1,16 +1,16 @@
 ---
-import ProjectRow from '../../components/ProjectRow.astro';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { loadProjects } from '../../lib/content';
-import { formatPageListMeta, SORT_BY_YEAR } from '../../lib/page-meta';
-import { getProjectsPageList } from '../../lib/projects';
+import ProjectRow from "../../components/ProjectRow.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadProjects } from "../../lib/content";
+import { formatPageListMeta, SORT_BY_YEAR } from "../../lib/page-meta";
+import { getProjectsPageList } from "../../lib/projects";
 
 const projects = await loadProjects();
 const { highlighted, rest } = getProjectsPageList(projects);
 const pageMeta = formatPageListMeta(
   projects.length,
-  'project',
-  'projects',
+  "project",
+  "projects",
   SORT_BY_YEAR,
 );
 ---

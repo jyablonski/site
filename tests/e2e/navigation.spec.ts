@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-const routes = ['/', '/posts/', '/projects/', '/resume/'];
+const routes = ["/", "/posts/", "/projects/", "/resume/"];
 
 for (const route of routes) {
   test(`navigation returns 200 for ${route}`, async ({ page }) => {
@@ -9,11 +9,11 @@ for (const route of routes) {
   });
 }
 
-test('nav links are present', async ({ page }) => {
-  await page.goto('/');
-  for (const label of ['Home', 'Posts', 'Projects', 'Resume']) {
+test("nav links are present", async ({ page }) => {
+  await page.goto("/");
+  for (const label of ["Home", "Posts", "Projects", "Resume"]) {
     await expect(
-      page.getByRole('navigation', { name: 'Primary' }).getByRole('link', {
+      page.getByRole("navigation", { name: "Primary" }).getByRole("link", {
         name: label,
       }),
     ).toBeVisible();

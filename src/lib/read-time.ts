@@ -1,8 +1,8 @@
-import type { Code, Parent, Root, Table, TableRow } from 'mdast';
-import remarkGfm from 'remark-gfm';
-import remarkParse from 'remark-parse';
-import { unified } from 'unified';
-import { visit } from 'unist-util-visit';
+import type { Code, Parent, Root, Table, TableRow } from "mdast";
+import remarkGfm from "remark-gfm";
+import remarkParse from "remark-parse";
+import { unified } from "unified";
+import { visit } from "unist-util-visit";
 
 /** Words per minute for prose (paragraphs, lists, blockquotes). */
 export const PROSE_WPM = 230;
@@ -45,7 +45,7 @@ export const CODE_LINE_SECONDS: Record<string, number> = {
   css: 0.2,
 };
 
-const DIAGRAM_LANGS = new Set(['mermaid', 'plantuml']);
+const DIAGRAM_LANGS = new Set(["mermaid", "plantuml"]);
 
 export interface ReadTimeBreakdown {
   proseWords: number;
@@ -81,20 +81,20 @@ function countWords(text: string): number {
 }
 
 function collectText(node: Parent): string {
-  let text = '';
-  visit(node, 'text', (child) => {
+  let text = "";
+  visit(node, "text", (child) => {
     text += `${child.value} `;
   });
   return text;
 }
 
 function isMathNode(node: { type: string }): boolean {
-  return node.type === 'math' || node.type === 'inlineMath';
+  return node.type === "math" || node.type === "inlineMath";
 }
 
 function countTableRows(table: Table): number {
   return table.children.filter(
-    (row): row is TableRow => row.type === 'tableRow',
+    (row): row is TableRow => row.type === "tableRow",
   ).length;
 }
 
@@ -104,7 +104,7 @@ function codeLineSeconds(lang: string, lines: number): number {
 }
 
 function countCodeLines(value: string): number {
-  const lines = value.split('\n');
+  const lines = value.split("\n");
   const nonEmpty = lines.filter((line) => line.trim().length > 0).length;
   return Math.max(nonEmpty, 1);
 }
@@ -123,13 +123,13 @@ export function estimateReadTimeFromTree(tree: Root): ReadTimeEstimate {
 
   visit(tree, (node) => {
     switch (node.type) {
-      case 'paragraph':
-      case 'heading':
+      case "paragraph":
+      case "heading":
         breakdown.proseWords += countWords(collectText(node));
         break;
-      case 'code': {
+      case "code": {
         const block = node as Code;
-        const lang = (block.lang ?? '').toLowerCase();
+        const lang = (block.lang ?? "").toLowerCase();
         if (DIAGRAM_LANGS.has(lang)) {
           breakdown.diagrams += 1;
           break;
@@ -139,10 +139,10 @@ export function estimateReadTimeFromTree(tree: Root): ReadTimeEstimate {
         codeSeconds += codeLineSeconds(lang, lines);
         break;
       }
-      case 'image':
+      case "image":
         breakdown.images += 1;
         break;
-      case 'table':
+      case "table":
         breakdown.tableRows += countTableRows(node as Table);
         break;
       default:
@@ -201,7 +201,7 @@ export function estimateReadTimeFromMarkdown(
 export function formatReadTimeLabel(value: string): string {
   const trimmed = value.trim();
   if (!trimmed) {
-    return '1 min read';
+    return "1 min read";
   }
   if (/\bread$/i.test(trimmed)) {
     return trimmed;
@@ -211,7 +211,7 @@ export function formatReadTimeLabel(value: string): string {
 
 export function formatReadTimeDisplay(estimate: ReadTimeEstimate): string {
   if (estimate.totalSeconds <= 0) {
-    return formatReadTimeLabel('1 min');
+    return formatReadTimeLabel("1 min");
   }
 
   const minutes = Math.max(1, Math.round(estimate.totalSeconds / 60));
