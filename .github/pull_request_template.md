@@ -1,8 +1,15 @@
-## Summary
+### Description
 
--
+Description for the PR
 
-## Test plan
+## Added
 
-- [ ] `npm run ci` passes locally
-- [ ] Visual check in `npm run dev` (if UI changed)
+- None
+
+## Updated
+
+- None
+
+## Deleted
+
+- None
