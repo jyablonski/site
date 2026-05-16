@@ -1,0 +1,45 @@
+---
+/** Client-render Mermaid diagrams inside `.prose` (from ```mermaid fences). */
+---
+
+<script>
+  async function initMermaid() {
+    const prose = document.querySelector('.prose');
+    const nodes = prose?.querySelectorAll('pre.mermaid');
+    if (!nodes?.length) return;
+
+    const { default: mermaid } = await import('mermaid');
+
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'dark',
+      securityLevel: 'strict',
+      fontFamily: 'var(--font-sans)',
+      themeVariables: {
+        background: '#0b0d10',
+        primaryColor: '#11141a',
+        primaryTextColor: '#e8eaef',
+        primaryBorderColor: 'rgba(255, 255, 255, 0.12)',
+        lineColor: 'rgba(232, 234, 239, 0.58)',
+        secondaryColor: '#11141a',
+        tertiaryColor: '#11141a',
+        noteBkgColor: '#11141a',
+        noteTextColor: '#e8eaef',
+        actorBkg: '#11141a',
+        actorTextColor: '#e8eaef',
+        actorBorder: 'rgba(255, 255, 255, 0.12)',
+        signalColor: '#e8eaef',
+        labelTextColor: '#e8eaef',
+        mainBkg: '#11141a',
+        nodeBorder: 'rgba(255, 255, 255, 0.12)',
+        clusterBkg: '#11141a',
+        titleColor: '#e8eaef',
+        edgeLabelBackground: '#0b0d10',
+      },
+    });
+
+    await mermaid.run({ nodes: [...nodes] as HTMLElement[] });
+  }
+
+  initMermaid();
+</script>

@@ -1,0 +1,79 @@
+---
+import ProjectRow from '../components/ProjectRow.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { homeContent } from '../data/site';
+import { site } from '../data/site';
+import { loadProjects } from '../lib/content';
+import { getFeaturedProjects } from '../lib/projects';
+
+const projects = await loadProjects();
+const featured = getFeaturedProjects(projects, 3);
+const stackLine = homeContent.stack.join(' · ');
+---
+
+<BaseLayout title={site.name} active="home">
+  <header class="hero">
+    <h1 class="display">
+      {homeContent.headline}
+      <span class="accent">{homeContent.headlineAccent}</span>
+      {homeContent.headlineEnd}
+    </h1>
+    <p class="hero-subtitle">{homeContent.subtitle}</p>
+  </header>
+
+  <p class="stack-line meta">{stackLine}</p>
+
+  <section class="featured" aria-labelledby="featured-heading">
+    <div class="featured-header">
+      <h2 id="featured-heading" class="section-label">Featured work</h2>
+      <a class="see-all" href="/projects/">See all →</a>
+    </div>
+    <hr class="hairline" />
+    <div class="featured-list">
+      {featured.map((project) => <ProjectRow project={project} />)}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    margin-bottom: var(--section-gap);
+    margin-top: 0;
+  }
+
+  .hero-subtitle {
+    color: var(--text-dim);
+    font-size: 0.96875rem;
+    line-height: 1.55;
+    margin: 1.25rem 0 0;
+    max-width: var(--text-max);
+  }
+
+  .stack-line {
+    margin: 0 0 var(--section-gap);
+  }
+
+  .featured-header {
+    align-items: baseline;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+
+  .see-all {
+    color: var(--text-faint);
+    font-size: var(--size-meta);
+    text-decoration: none;
+  }
+
+  .see-all:hover {
+    color: var(--text-dim);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  .featured-list :global(.project-row:first-child) {
+    border-top: none;
+  }
+</style>

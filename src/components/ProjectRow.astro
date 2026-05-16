@@ -1,0 +1,107 @@
+---
+import type { ProjectEntry } from '../lib/projects';
+import { getProjectHref } from '../lib/projects';
+
+interface Props {
+  project: ProjectEntry;
+  highlighted?: boolean;
+}
+
+const { project, highlighted = false } = Astro.props;
+const href = getProjectHref(project);
+---
+
+<a
+  class:list={[
+    'entry-row',
+    'project-row',
+    highlighted && 'project-row--highlighted',
+  ]}
+  href={href}
+>
+  {
+    highlighted && (
+      <span class="project-highlight-label meta">Flagship project</span>
+    )
+  }
+  <div class="entry-row-top project-row-top">
+    <span class="project-name">{project.name}</span>
+    <span class="project-kind">{project.kind}</span>
+    <span class="entry-row-meta project-meta meta">
+      <span class="project-year">{project.year}</span>
+      {
+        project.readTime && (
+          <span class="project-read-time">{project.readTime}</span>
+        )
+      }
+    </span>
+  </div>
+  <div class="entry-row-mid project-row-mid">
+    <p class="entry-row-summary project-summary">{project.summary}</p>
+    <span class="entry-row-chevron project-chevron" aria-hidden="true">→</span>
+  </div>
+  {
+    project.tags.length > 0 && (
+      <div class="entry-row-tags project-tags">
+        {project.tags.map((tag) => (
+          <span class="chip">{tag}</span>
+        ))}
+      </div>
+    )
+  }
+</a>
+
+<style>
+  .project-row--highlighted {
+    background: var(--bg-raised);
+    border: 1px solid var(--accent-dim);
+    border-radius: 2px;
+    margin-bottom: 0.25rem;
+    padding: 1.5rem 1rem;
+  }
+
+  .project-row--highlighted:hover {
+    background: rgba(122, 167, 255, 0.04);
+  }
+
+  .project-highlight-label {
+    display: block;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  .project-row-top {
+    grid-template-columns: 1fr auto;
+  }
+
+  @media (min-width: 521px) {
+    .project-row-top {
+      grid-template-columns: auto 1fr auto;
+    }
+  }
+
+  .project-name {
+    color: var(--text);
+    font-size: 1.1875rem;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+
+  .project-kind {
+    color: var(--text-faint);
+    font-size: var(--size-meta);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .project-year,
+  .project-read-time {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .project-read-time {
+    color: var(--text-faint);
+  }
+</style>

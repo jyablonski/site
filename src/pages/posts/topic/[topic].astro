@@ -1,0 +1,78 @@
+---
+import PostRow from '../../../components/PostRow.astro';
+import TopicChips from '../../../components/TopicChips.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { loadPublishedPosts } from '../../../lib/content';
+import { filterPostsByTopic } from '../../../lib/posts';
+import { formatPageListMeta, SORT_BY_DATE } from '../../../lib/page-meta';
+import { getTopicLinks } from '../../../lib/tags';
+
+export async function getStaticPaths() {
+  const allPosts = await loadPublishedPosts();
+  const topics = getTopicLinks(allPosts);
+
+  return topics.map((topic) => ({
+    params: { topic: topic.slug },
+    props: { activeTopic: topic.slug, topicLabel: topic.label },
+  }));
+}
+
+interface Props {
+  activeTopic: string;
+  topicLabel: string;
+}
+
+const { activeTopic, topicLabel } = Astro.props;
+const allPosts = await loadPublishedPosts();
+const posts = filterPostsByTopic(allPosts, activeTopic);
+const topics = getTopicLinks(allPosts);
+const pageMeta = formatPageListMeta(
+  posts.length,
+  'post',
+  'posts',
+  SORT_BY_DATE,
+);
+---
+
+<BaseLayout title={`Posts · ${topicLabel}`} active="posts">
+  <header class="page-header">
+    <h1 class="display">Posts</h1>
+    <p class="page-meta meta">{pageMeta}</p>
+  </header>
+
+  <TopicChips topics={topics} activeTopic={activeTopic} />
+  <hr class="hairline" />
+
+  <section class="post-list" aria-label="Posts">
+    {
+      posts.length === 0 ? (
+        <p class="empty meta">No posts match this topic.</p>
+      ) : (
+        posts.map((post) => <PostRow post={post} />)
+      )
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .page-header {
+    align-items: baseline;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-meta {
+    margin: 0;
+  }
+
+  .empty {
+    margin: 2rem 0;
+  }
+
+  .post-list :global(.entry-row:first-child) {
+    border-top: none;
+  }
+</style>

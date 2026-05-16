@@ -1,0 +1,12 @@
+---
+import { site } from '../data/site';
+---
+
+<script is:inline define:vars={{ gaId: site.gaId }}>
+  window.GA_MEASUREMENT_ID = gaId;
+</script>
+<script
+  is:inline
+  async
+  src={`https://www.googletagmanager.com/gtag/js?id=${site.gaId}`}></script>
+<script is:inline src="/js/gtag-init.js"></script>

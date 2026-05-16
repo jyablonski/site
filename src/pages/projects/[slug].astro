@@ -1,0 +1,103 @@
+---
+import { getCollection, render } from 'astro:content';
+import Mermaid from '../../components/Mermaid.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { mapProjectEntry } from '../../lib/content';
+export async function getStaticPaths() {
+  const entries = await getCollection('projects');
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const project = mapProjectEntry(entry);
+const { Content } = await render(entry);
+---
+
+<BaseLayout
+  title={project.name}
+  description={project.summary}
+  active="projects"
+>
+  <article>
+    <header class="project-header">
+      <p class="meta">
+        <span>{project.kind}</span>
+        <span aria-hidden="true"> · </span>
+        <span>{project.year}</span>
+        {
+          project.readTime && (
+            <>
+              <span aria-hidden="true"> · </span>
+              <span>{project.readTime}</span>
+            </>
+          )
+        }
+      </p>
+      <h1 class="display">{project.name}</h1>
+      <p class="project-lead">{project.summary}</p>
+      {
+        (project.site || project.repo) && (
+          <p class="project-links">
+            {project.site && <a href={project.site}>Live site</a>}
+            {project.site && project.repo && (
+              <span aria-hidden="true"> · </span>
+            )}
+            {project.repo && <a href={project.repo}>Repository</a>}
+          </p>
+        )
+      }
+      {
+        project.tags.length > 0 && (
+          <div class="tag-row">
+            {project.tags.map((tag) => (
+              <span class="chip">{tag}</span>
+            ))}
+          </div>
+        )
+      }
+    </header>
+    <hr class="hairline content-divider" />
+    <div class="prose">
+      <Content />
+    </div>
+    <Mermaid />
+    <p class="back-link">
+      <a href="/projects/">← All projects</a>
+    </p>
+  </article>
+</BaseLayout>
+
+<style>
+  .project-header {
+    margin-bottom: 0;
+  }
+
+  .project-lead {
+    color: var(--text-dim);
+    font-size: 0.96875rem;
+    line-height: 1.55;
+    margin: 1rem 0;
+    max-width: var(--text-max);
+  }
+
+  .project-links {
+    font-size: var(--size-meta);
+    margin: 0 0 1rem;
+  }
+
+  .tag-row {
+    margin-top: 1rem;
+  }
+
+  .back-link {
+    margin-top: 2.5rem;
+  }
+
+  .back-link a {
+    color: var(--text-faint);
+    font-size: var(--size-meta);
+  }
+</style>

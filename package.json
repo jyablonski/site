@@ -1,0 +1,50 @@
+{
+  "name": "jyablonski-site",
+  "type": "module",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check",
+    "format:check": "prettier --check .",
+    "format": "prettier --write .",
+    "lint:eslint": "eslint . --max-warnings 0",
+    "lint": "npm run lint:eslint && npm run format:check",
+    "quality": "npm run check && npm run lint",
+    "test:unit": "vitest run --coverage --reporter=verbose",
+    "test:e2e": "node --disable-warning=DEP0205 ./node_modules/@playwright/test/cli.js test",
+    "test:unit:watch": "vitest --coverage --reporter=verbose",
+    "test": "npm run quality && npm run test:unit && npm run test:e2e",
+    "ci": "npm run test"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.18",
+    "@astrojs/sitemap": "^3.7.1",
+    "@fontsource-variable/geist": "^5.2.8",
+    "@fontsource-variable/geist-mono": "^5.2.7",
+    "astro": "^6.3.3",
+    "mermaid": "^11.15.0",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.1.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^24.10.13",
+    "@vitest/coverage-v8": "^4.1.0",
+    "eslint": "^9.39.4",
+    "eslint-plugin-astro": "^1.5.0",
+    "prettier": "^3.8.1",
+    "prettier-plugin-astro": "^0.14.1",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.57.0",
+    "vitest": "^4.1.0"
+  }
+}

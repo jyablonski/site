@@ -1,0 +1,57 @@
+---
+import type { PostEntry } from '../lib/posts';
+import { formatPostDate, getPostHref } from '../lib/posts';
+
+interface Props {
+  post: PostEntry;
+}
+
+const { post } = Astro.props;
+const href = getPostHref(post);
+---
+
+<a class="entry-row post-row" href={href}>
+  <div class="entry-row-top post-row-top">
+    <h2 class="post-title">{post.title}</h2>
+    <span class="entry-row-meta post-meta meta">
+      <time class="post-date" datetime={formatPostDate(post.date)}>
+        {formatPostDate(post.date)}
+      </time>
+      <span class="post-read-time">{post.readTime}</span>
+    </span>
+  </div>
+  <div class="entry-row-mid post-row-mid">
+    <p class="entry-row-summary post-excerpt">{post.excerpt}</p>
+    <span class="entry-row-chevron post-chevron" aria-hidden="true">→</span>
+  </div>
+  {
+    post.tags.length > 0 && (
+      <div class="entry-row-tags post-tags">
+        {post.tags.map((tag) => (
+          <span class="chip">{tag}</span>
+        ))}
+      </div>
+    )
+  }
+</a>
+
+<style>
+  .post-title {
+    color: var(--text);
+    font-size: 1.1875rem;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+    margin: 0;
+  }
+
+  .post-date,
+  .post-read-time {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .post-read-time {
+    color: var(--text-faint);
+  }
+</style>

@@ -1,0 +1,49 @@
+---
+import ProjectRow from '../../components/ProjectRow.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { loadProjects } from '../../lib/content';
+import { formatPageListMeta, SORT_BY_YEAR } from '../../lib/page-meta';
+import { getProjectsPageList } from '../../lib/projects';
+
+const projects = await loadProjects();
+const { highlighted, rest } = getProjectsPageList(projects);
+const pageMeta = formatPageListMeta(
+  projects.length,
+  'project',
+  'projects',
+  SORT_BY_YEAR,
+);
+---
+
+<BaseLayout title="Projects" active="projects">
+  <header class="page-header">
+    <h1 class="display">Projects</h1>
+    <p class="page-meta meta">{pageMeta}</p>
+  </header>
+  <hr class="hairline" />
+  <section class="project-list" aria-label="Projects">
+    {highlighted && <ProjectRow project={highlighted} highlighted />}
+    {rest.map((project) => <ProjectRow project={project} />)}
+  </section>
+</BaseLayout>
+
+<style>
+  .page-header {
+    align-items: baseline;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-meta {
+    margin: 0;
+  }
+
+  .project-list
+    :global(.project-row:not(.project-row--highlighted):first-of-type),
+  .project-list :global(.project-row--highlighted + .project-row) {
+    border-top: none;
+  }
+</style>

@@ -1,0 +1,110 @@
+---
+import Mermaid from '../components/Mermaid.astro';
+import BaseLayout from './BaseLayout.astro';
+import { formatPostDate, getPostHref } from '../lib/posts';
+import type { PostEntry } from '../lib/posts';
+
+interface Props {
+  post: PostEntry;
+  prev?: PostEntry;
+  next?: PostEntry;
+}
+
+const { post, prev, next } = Astro.props;
+---
+
+<BaseLayout title={post.title} description={post.excerpt} active="posts">
+  <article class="post-article">
+    <header class="post-header">
+      <p class="post-meta-row meta">
+        <time datetime={formatPostDate(post.date)}
+          >{formatPostDate(post.date)}</time
+        >
+        <span aria-hidden="true"> · </span>
+        <span>{post.readTime}</span>
+      </p>
+      <h1 class="display">{post.title}</h1>
+      {
+        post.tags.length > 0 && (
+          <div class="tag-row post-tag-row">
+            {post.tags.map((tag) => (
+              <span class="chip">{tag}</span>
+            ))}
+          </div>
+        )
+      }
+    </header>
+    <hr class="hairline content-divider" />
+    <div class="prose">
+      <slot />
+    </div>
+    <Mermaid />
+    {
+      (prev || next) && (
+        <nav class="post-nav" aria-label="Post pagination">
+          <hr class="hairline" />
+          <div class="post-nav-inner">
+            {prev ? (
+              <a class="post-nav-link" href={getPostHref(prev)}>
+                ← {prev.title}
+              </a>
+            ) : (
+              <span />
+            )}
+            {next ? (
+              <a class="post-nav-link post-nav-next" href={getPostHref(next)}>
+                {next.title} →
+              </a>
+            ) : (
+              <span />
+            )}
+          </div>
+        </nav>
+      )
+    }
+  </article>
+</BaseLayout>
+
+<style>
+  .post-header {
+    margin-bottom: 0;
+  }
+
+  .post-meta-row {
+    margin: 0 0 1rem;
+  }
+
+  .post-tag-row {
+    margin-top: 1rem;
+  }
+
+  .post-nav {
+    margin-top: 2rem;
+  }
+
+  .post-nav-inner {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    margin-top: 1.25rem;
+  }
+
+  .post-nav-link {
+    color: var(--text-dim);
+    font-size: var(--size-meta);
+    max-width: 45%;
+    text-decoration: none;
+  }
+
+  .post-nav-link:hover {
+    color: var(--text);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  .post-nav-next {
+    margin-left: auto;
+    text-align: right;
+  }
+</style>

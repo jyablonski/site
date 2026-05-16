@@ -1,0 +1,62 @@
+---
+import type { TopicLink } from '../lib/tags';
+
+interface Props {
+  topics: TopicLink[];
+  activeTopic: string;
+}
+
+const { topics, activeTopic } = Astro.props;
+---
+
+<div class="topic-chips" role="navigation" aria-label="Filter posts by topic">
+  <a
+    href="/posts/"
+    class:list={['chip-link', { active: activeTopic === 'all' }]}
+    aria-current={activeTopic === 'all' ? 'true' : undefined}
+  >
+    all
+  </a>
+  {
+    topics.map((topic) => (
+      <a
+        href={`/posts/topic/${topic.slug}/`}
+        class:list={['chip-link', { active: activeTopic === topic.slug }]}
+        aria-current={activeTopic === topic.slug ? 'true' : undefined}
+      >
+        {topic.label}
+      </a>
+    ))
+  }
+</div>
+
+<style>
+  .topic-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1.25rem 0 1.5rem;
+  }
+
+  .chip-link {
+    border: 1px solid var(--rule);
+    border-radius: 9999px;
+    color: var(--text-faint);
+    font-size: var(--size-chip);
+    letter-spacing: 0.01em;
+    padding: 0.3rem 0.75rem;
+    text-decoration: none;
+    text-transform: lowercase;
+  }
+
+  .chip-link:hover {
+    border-color: var(--rule-strong);
+    text-decoration: none;
+  }
+
+  .chip-link.active {
+    background: var(--accent-chip-bg);
+    border-color: var(--accent-dim);
+    color: var(--accent);
+  }
+</style>
