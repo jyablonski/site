@@ -1,12 +1,12 @@
 ---
-import { getCollection, render } from 'astro:content';
-import PostLayout from '../../layouts/PostLayout.astro';
-import { loadPublishedPosts, mapPostEntry } from '../../lib/content';
-import { getAdjacentPosts } from '../../lib/posts';
-import type { PostEntry } from '../../lib/posts';
+import { getCollection, render } from "astro:content";
+import PostLayout from "../../layouts/PostLayout.astro";
+import { loadPublishedPosts, mapPostEntry } from "../../lib/content";
+import { getAdjacentPosts } from "../../lib/posts";
+import type { PostEntry } from "../../lib/posts";
 
 export async function getStaticPaths() {
-  const entries = await getCollection('posts', ({ data }) => !data.draft);
+  const entries = await getCollection("posts", ({ data }) => !data.draft);
   return entries.map((entry) => ({
     params: { slug: entry.id },
     props: { entry },

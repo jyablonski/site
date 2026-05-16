@@ -1,6 +1,6 @@
 ---
 name: Debezium Kafka Streaming
-year: '2022'
+year: "2022"
 kind: Data Demo
 summary: Local Docker Compose stack for CDC with Debezium, MySQL, Postgres, Kafka, Kafka Connect, optional S3 sinks, and a Python producer that writes synthetic rows to both databases for change capture.
 tags: [Debezium, Kafka, Docker]

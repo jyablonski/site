@@ -1,5 +1,5 @@
 ---
-import type { TopicLink } from '../lib/tags';
+import type { TopicLink } from "../lib/tags";
 
 interface Props {
   topics: TopicLink[];
@@ -12,8 +12,8 @@ const { topics, activeTopic } = Astro.props;
 <div class="topic-chips" role="navigation" aria-label="Filter posts by topic">
   <a
     href="/posts/"
-    class:list={['chip-link', { active: activeTopic === 'all' }]}
-    aria-current={activeTopic === 'all' ? 'true' : undefined}
+    class:list={["chip-link", { active: activeTopic === "all" }]}
+    aria-current={activeTopic === "all" ? "true" : undefined}
   >
     all
   </a>
@@ -21,8 +21,8 @@ const { topics, activeTopic } = Astro.props;
     topics.map((topic) => (
       <a
         href={`/posts/topic/${topic.slug}/`}
-        class:list={['chip-link', { active: activeTopic === topic.slug }]}
-        aria-current={activeTopic === topic.slug ? 'true' : undefined}
+        class:list={["chip-link", { active: activeTopic === topic.slug }]}
+        aria-current={activeTopic === topic.slug ? "true" : undefined}
       >
         {topic.label}
       </a>

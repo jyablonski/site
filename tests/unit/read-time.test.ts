@@ -1,12 +1,12 @@
-import { describe, expect, it } from 'vitest';
-import type { Root } from 'mdast';
+import { describe, expect, it } from "vitest";
+import type { Root } from "mdast";
 import {
   estimateReadTimeFromMarkdown,
   estimateReadTimeFromTree,
   formatReadTimeDisplay,
   formatReadTimeLabel,
   resolveContentReadTime,
-} from '../../src/lib/read-time';
+} from "../../src/lib/read-time";
 
 const SAMPLE = `---
 ignored: frontmatter is not in the body passed to the estimator
@@ -33,8 +33,8 @@ flowchart LR
 \`\`\`
 `;
 
-describe('read-time', () => {
-  it('counts prose, code, and diagrams separately', () => {
+describe("read-time", () => {
+  it("counts prose, code, and diagrams separately", () => {
     const estimate = estimateReadTimeFromMarkdown(SAMPLE);
 
     expect(estimate.breakdown.proseWords).toBeGreaterThan(10);
@@ -46,40 +46,40 @@ describe('read-time', () => {
     expect(estimate.totalSeconds).toBeGreaterThan(0);
   });
 
-  it('uses a range when non-prose content dominates', () => {
-    const heavyCode = '```go\n' + 'fmt.Println("x")\n'.repeat(40) + '```';
+  it("uses a range when non-prose content dominates", () => {
+    const heavyCode = "```go\n" + 'fmt.Println("x")\n'.repeat(40) + "```";
     const estimate = estimateReadTimeFromMarkdown(heavyCode);
 
     expect(estimate.useRange).toBe(true);
     expect(formatReadTimeDisplay(estimate)).toMatch(/^\d+-\d+ min read$/);
   });
 
-  it('formats a single rounded minute for prose-heavy posts', () => {
-    const prose = 'word '.repeat(400);
+  it("formats a single rounded minute for prose-heavy posts", () => {
+    const prose = "word ".repeat(400);
     const estimate = estimateReadTimeFromMarkdown(prose);
 
     expect(estimate.useRange).toBe(false);
     expect(formatReadTimeDisplay(estimate)).toMatch(/^\d+ min read$/);
   });
 
-  it('prefers manual frontmatter override', () => {
-    expect(resolveContentReadTime('any body', '2 min')).toBe('2 min read');
+  it("prefers manual frontmatter override", () => {
+    expect(resolveContentReadTime("any body", "2 min")).toBe("2 min read");
   });
 
-  it('estimates from body when manual read time is absent', () => {
-    const display = resolveContentReadTime('Hello world from a short post.');
+  it("estimates from body when manual read time is absent", () => {
+    const display = resolveContentReadTime("Hello world from a short post.");
     expect(display).toMatch(/^\d+(-\d+)? min read$/);
   });
 
-  it('normalizes manual labels that already include read', () => {
-    expect(formatReadTimeLabel('3 min read')).toBe('3 min read');
+  it("normalizes manual labels that already include read", () => {
+    expect(formatReadTimeLabel("3 min read")).toBe("3 min read");
   });
 
-  it('returns undefined for an empty body', () => {
-    expect(resolveContentReadTime('   ')).toBeUndefined();
+  it("returns undefined for an empty body", () => {
+    expect(resolveContentReadTime("   ")).toBeUndefined();
   });
 
-  it('counts table rows and images', () => {
+  it("counts table rows and images", () => {
     const markdown = `
 | Col |
 | --- |
@@ -96,18 +96,18 @@ describe('read-time', () => {
     expect(estimate.categorySeconds.images).toBeGreaterThan(0);
   });
 
-  it('returns at least one minute for empty content', () => {
-    expect(formatReadTimeDisplay(estimateReadTimeFromMarkdown(''))).toBe(
-      '1 min read',
+  it("returns at least one minute for empty content", () => {
+    expect(formatReadTimeDisplay(estimateReadTimeFromMarkdown(""))).toBe(
+      "1 min read",
     );
   });
 
-  it('counts math nodes in the AST', () => {
+  it("counts math nodes in the AST", () => {
     const tree = {
-      type: 'root',
+      type: "root",
       children: [
-        { type: 'math', value: 'E = mc^2' },
-        { type: 'inlineMath', value: 'x' },
+        { type: "math", value: "E = mc^2" },
+        { type: "inlineMath", value: "x" },
       ],
     } as unknown as Root;
 

@@ -1,5 +1,5 @@
-import { tagMatchesSlug } from './tags';
-import type { PostMeta } from './schemas';
+import { tagMatchesSlug } from "./tags";
+import type { PostMeta } from "./schemas";
 
 export type PostEntry = PostMeta & {
   slug: string;
@@ -7,7 +7,7 @@ export type PostEntry = PostMeta & {
 };
 
 export function getPostHref(post: PostEntry | string): string {
-  const slug = typeof post === 'string' ? post : post.slug;
+  const slug = typeof post === "string" ? post : post.slug;
   return `/posts/${slug}/`;
 }
 
@@ -23,7 +23,7 @@ export function filterPostsByTopic(
   posts: PostEntry[],
   topicSlug: string,
 ): PostEntry[] {
-  if (!topicSlug || topicSlug === 'all') {
+  if (!topicSlug || topicSlug === "all") {
     return posts;
   }
   return posts.filter((post) =>

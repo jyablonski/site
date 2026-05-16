@@ -1,6 +1,6 @@
 ---
 name: goarctis
-year: '2025 - present'
+year: "2025 - present"
 kind: System tray app
 summary: Linux system tray app for wireless device battery levels where vendor software skips Linux.
 tags: [Go, Linux]

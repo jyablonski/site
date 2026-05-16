@@ -1,6 +1,6 @@
 ---
-import type { ProjectEntry } from '../lib/projects';
-import { getProjectHref } from '../lib/projects';
+import type { ProjectEntry } from "../lib/projects";
+import { getProjectHref } from "../lib/projects";
 
 interface Props {
   project: ProjectEntry;
@@ -13,9 +13,9 @@ const href = getProjectHref(project);
 
 <a
   class:list={[
-    'entry-row',
-    'project-row',
-    highlighted && 'project-row--highlighted',
+    "entry-row",
+    "project-row",
+    highlighted && "project-row--highlighted",
   ]}
   href={href}
 >

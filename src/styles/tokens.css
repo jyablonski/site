@@ -13,8 +13,8 @@
   --success-dot: #52c178;
   --success-halo: rgba(82, 193, 120, 0.35);
 
-  --font-sans: 'Geist Variable', system-ui, sans-serif;
-  --font-mono: 'Geist Mono Variable', ui-monospace, monospace;
+  --font-sans: "Geist Variable", system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
 
   --size-display: clamp(2rem, 5vw, 2.75rem);
   --size-section: 0.8125rem;

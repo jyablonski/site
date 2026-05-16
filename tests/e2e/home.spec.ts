@@ -1,9 +1,9 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('home page shows hero heading and featured work', async ({ page }) => {
-  await page.goto('/');
+test("home page shows hero heading and featured work", async ({ page }) => {
+  await page.goto("/");
   await expect(
-    page.getByRole('heading', {
+    page.getByRole("heading", {
       name: /Building\s+quiet, reliable\s+data systems/i,
       level: 1,
     }),
@@ -12,10 +12,10 @@ test('home page shows hero heading and featured work', async ({ page }) => {
     page.getByText(/Data engineer in Southern California/i),
   ).toBeVisible();
   await expect(
-    page.locator('.project-name', { hasText: 'NBA ELT Pipeline' }),
+    page.locator(".project-name", { hasText: "NBA ELT Pipeline" }),
   ).toBeVisible();
   await expect(
-    page.locator('.featured-list .project-row').nth(2).locator('.project-name'),
-  ).toHaveText('Homelab');
-  await expect(page.getByRole('link', { name: 'See all →' })).toBeVisible();
+    page.locator(".featured-list .project-row").nth(2).locator(".project-name"),
+  ).toHaveText("Homelab");
+  await expect(page.getByRole("link", { name: "See all →" })).toBeVisible();
 });

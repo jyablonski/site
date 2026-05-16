@@ -1,6 +1,6 @@
 ---
-import Brand from './Brand.astro';
-import { navItems, type ActiveRoute } from '../lib/nav';
+import Brand from "./Brand.astro";
+import { navItems, type ActiveRoute } from "../lib/nav";
 
 interface Props {
   active: ActiveRoute;
@@ -17,8 +17,8 @@ const { active } = Astro.props;
         <li>
           <a
             href={item.href}
-            class:list={['nav-link', { 'is-active': active === item.route }]}
-            aria-current={active === item.route ? 'page' : undefined}
+            class:list={["nav-link", { "is-active": active === item.route }]}
+            aria-current={active === item.route ? "page" : undefined}
           >
             {item.label}
             {active === item.route && (

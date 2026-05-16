@@ -13,8 +13,8 @@ export function tagToSlug(tag: string): string {
   return tag
     .trim()
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 export function tagMatchesSlug(tag: string, slug: string): boolean {
@@ -42,9 +42,9 @@ export function formatTopicSlugCollisions(collisions: string[][]): string {
   return collisions
     .map(
       (labels) =>
-        `${labels.map((l) => `"${l}"`).join(', ')} → "${tagToSlug(labels[0]!)}"`,
+        `${labels.map((l) => `"${l}"`).join(", ")} → "${tagToSlug(labels[0]!)}"`,
     )
-    .join('; ');
+    .join("; ");
 }
 
 export function getAllTags(posts: { tags: string[] }[]): TagCount[] {

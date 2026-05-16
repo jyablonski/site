@@ -1,6 +1,6 @@
 ---
 name: NBA ELT Pipeline
-year: '2021 - present'
+year: "2021 - present"
 kind: Data platform
 summary: An end-to-end NBA analytics platform with ingestion, dbt models, REST API, and a dashboard for season metrics, insights, and ML-powered win predictions, all hosted on cloud infrastructure.
 tags: [Python, dbt, Terraform, AWS]

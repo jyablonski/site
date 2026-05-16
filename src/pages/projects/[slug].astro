@@ -1,10 +1,10 @@
 ---
-import { getCollection, render } from 'astro:content';
-import Mermaid from '../../components/Mermaid.astro';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { mapProjectEntry } from '../../lib/content';
+import { getCollection, render } from "astro:content";
+import Mermaid from "../../components/Mermaid.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { mapProjectEntry } from "../../lib/content";
 export async function getStaticPaths() {
-  const entries = await getCollection('projects');
+  const entries = await getCollection("projects");
   return entries.map((entry) => ({
     params: { slug: entry.id },
     props: { entry },

@@ -1,10 +1,10 @@
-import type { ProjectMeta } from './schemas';
+import type { ProjectMeta } from "./schemas";
 
 /** Always pinned to the top of `/projects/` with highlighted styling. */
-export const HIGHLIGHTED_PROJECT_SLUG = 'nba-elt-pipeline';
+export const HIGHLIGHTED_PROJECT_SLUG = "nba-elt-pipeline";
 
 /** When `featured`, always listed last on the home featured row (within `limit`). */
-export const HOME_FEATURED_LAST_SLUG = 'homelab';
+export const HOME_FEATURED_LAST_SLUG = "homelab";
 
 export type ProjectEntry = ProjectMeta & {
   slug: string;
@@ -67,7 +67,7 @@ export function getProjectBySlug(
 }
 
 export function getProjectHref(project: ProjectEntry | string): string {
-  const slug = typeof project === 'string' ? project : project.slug;
+  const slug = typeof project === "string" ? project : project.slug;
   return `/projects/${slug}/`;
 }
 
