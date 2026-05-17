@@ -105,6 +105,32 @@ describe("schemas", () => {
     ).toThrow();
   });
 
+  it("accepts optional seoTitle and updated fields", () => {
+    const result = postSchema.parse({
+      title: "Voice-forward H1",
+      seoTitle: "Debugging dbt Test Failures with Snowflake Regex Behavior",
+      date: "2026-01-15",
+      updated: "2026-02-01",
+      excerpt: "Summary",
+    });
+
+    expect(result.seoTitle).toBe(
+      "Debugging dbt Test Failures with Snowflake Regex Behavior",
+    );
+    expect(result.updated).toBeInstanceOf(Date);
+  });
+
+  it("rejects updated dates before publish date", () => {
+    expect(() =>
+      postSchema.parse({
+        title: "Hello",
+        date: "2026-02-01",
+        updated: "2026-01-15",
+        excerpt: "Summary",
+      }),
+    ).toThrow(/on or after the publish date/);
+  });
+
   it("rejects post tags that share a topic slug", () => {
     expect(() =>
       postSchema.parse({

@@ -1,6 +1,12 @@
 ---
 import Mermaid from "../components/Mermaid.astro";
 import BaseLayout from "./BaseLayout.astro";
+import { site } from "../data/site";
+import {
+  buildArticleJsonLd,
+  getPostDocumentTitle,
+  shouldShowUpdatedDate,
+} from "../lib/post-seo";
 import { formatPostDate, getPostHref } from "../lib/posts";
 import type { PostEntry } from "../lib/posts";
 
@@ -11,15 +17,37 @@ interface Props {
 }
 
 const { post, prev, next } = Astro.props;
+const siteOrigin = Astro.site ?? site.url;
+const canonicalPath = getPostHref(post);
+const canonicalUrl = new URL(canonicalPath, siteOrigin).href;
+const documentTitle = getPostDocumentTitle(post);
+const showUpdated = shouldShowUpdatedDate(post);
 ---
 
-<BaseLayout title={post.title} description={post.excerpt} active="posts">
+<BaseLayout
+  title={documentTitle}
+  description={post.excerpt}
+  active="posts"
+  canonicalPath={canonicalPath}
+  ogType="article"
+  jsonLd={buildArticleJsonLd(post, canonicalUrl)}
+>
   <article class="post-article">
     <header class="post-header">
       <p class="post-meta-row meta">
-        <time datetime={formatPostDate(post.date)}
-          >{formatPostDate(post.date)}</time
-        >
+        <time datetime={formatPostDate(post.date)}>
+          Published {formatPostDate(post.date)}
+        </time>
+        {
+          showUpdated && post.updated && (
+            <>
+              <span aria-hidden="true"> · </span>
+              <time datetime={formatPostDate(post.updated)}>
+                Updated {formatPostDate(post.updated)}
+              </time>
+            </>
+          )
+        }
         <span aria-hidden="true"> · </span>
         <span>{post.readTime}</span>
       </p>

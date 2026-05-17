@@ -1,9 +1,11 @@
 ---
 title: Example post
+seoTitle: Example post for search snippets and document titles
 date: 2026-01-15
+updated: 2026-02-01
 tags: [example]
-excerpt: A placeholder post showing how entries look on the blog index and detail pages.
-draft: true
+excerpt: A placeholder post showing SEO frontmatter and publish/update dates.
+draft: false
 ---
 
 This is sample content. Replace the frontmatter and body with your own writing when you are ready to publish.

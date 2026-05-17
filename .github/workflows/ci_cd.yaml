@@ -51,9 +51,6 @@ jobs:
       - name: Install dependencies
         run: make setup-e2e
 
-      - name: Build static site
-        run: make build
-
       - name: Run Playwright tests
         run: make e2e
 
