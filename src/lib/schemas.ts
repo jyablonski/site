@@ -22,24 +22,39 @@ const tagSchema = trimmed.refine((tag) => tagToSlug(tag).length > 0, {
   message: "Tag must contain at least one letter or number",
 });
 
-export const postSchema = z.object({
-  title: trimmed,
-  date: z.coerce.date(),
-  readTime: readTimeSchema.optional(),
-  tags: z
-    .array(tagSchema)
-    .default([])
-    .superRefine((tags, ctx) => {
-      const collisions = getTopicSlugCollisions(tags);
-      if (collisions.length === 0) return;
+export const postSchema = z
+  .object({
+    title: trimmed,
+    seoTitle: trimmed.optional(),
+    date: z.coerce.date(),
+    updated: z.coerce.date().optional(),
+    readTime: readTimeSchema.optional(),
+    tags: z
+      .array(tagSchema)
+      .default([])
+      .superRefine((tags, ctx) => {
+        const collisions = getTopicSlugCollisions(tags);
+        if (collisions.length === 0) return;
+        ctx.addIssue({
+          code: "custom",
+          message: `Tags share the same topic slug: ${formatTopicSlugCollisions(collisions)}`,
+        });
+      }),
+    excerpt: trimmed,
+    draft: z.boolean().default(false),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.updated) {
+      return;
+    }
+    if (data.updated.getTime() < data.date.getTime()) {
       ctx.addIssue({
         code: "custom",
-        message: `Tags share the same topic slug: ${formatTopicSlugCollisions(collisions)}`,
+        path: ["updated"],
+        message: "Updated date must be on or after the publish date",
       });
-    }),
-  excerpt: trimmed,
-  draft: z.boolean().default(false),
-});
+    }
+  });
 
 export const projectSchema = z.object({
   name: trimmed,

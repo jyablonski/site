@@ -27,8 +27,10 @@ export function mapPostEntry(entry: PostCollectionEntry): PostEntry {
   return {
     slug: entry.id,
     title: entry.data.title,
+    seoTitle: entry.data.seoTitle,
     excerpt: entry.data.excerpt,
     date: entry.data.date,
+    updated: entry.data.updated,
     readTime:
       resolveContentReadTime(entry.body ?? "", entry.data.readTime) ?? "",
     tags: entry.data.tags,

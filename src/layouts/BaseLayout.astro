@@ -4,6 +4,7 @@ import Footer from "../components/Footer.astro";
 import Nav from "../components/Nav.astro";
 import { site } from "../data/site";
 import type { ActiveRoute } from "../lib/nav";
+import { formatSitePageTitle } from "../lib/post-seo";
 import "../styles/global.css";
 
 interface Props {
@@ -11,6 +12,8 @@ interface Props {
   description?: string;
   active: ActiveRoute;
   canonicalPath?: string;
+  ogType?: "website" | "article";
+  jsonLd?: Record<string, unknown>;
 }
 
 const {
@@ -18,12 +21,15 @@ const {
   description = site.description,
   active,
   canonicalPath,
+  ogType = "website",
+  jsonLd,
 } = Astro.props;
-const pageTitle = title === site.name ? title : `${title} | ${site.name}`;
+const pageTitle = formatSitePageTitle(title);
 const siteOrigin = Astro.site ?? site.url;
 const canonicalUrl = new URL(canonicalPath ?? Astro.url.pathname, siteOrigin)
   .href;
 const showAnalytics = import.meta.env.PROD && Boolean(site.gaId);
+const jsonLdPayload = jsonLd ? JSON.stringify(jsonLd) : undefined;
 ---
 
 <!doctype html>
@@ -34,7 +40,7 @@ const showAnalytics = import.meta.env.PROD && Boolean(site.gaId);
     <meta name="author" content={site.name} />
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
@@ -50,6 +56,11 @@ const showAnalytics = import.meta.env.PROD && Boolean(site.gaId);
       href="/rss.xml"
     />
     <title>{pageTitle}</title>
+    {
+      jsonLdPayload && (
+        <script type="application/ld+json" is:inline set:html={jsonLdPayload} />
+      )
+    }
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>

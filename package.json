@@ -17,7 +17,7 @@
     "lint": "npm run lint:eslint && npm run format:check",
     "quality": "npm run check && npm run lint",
     "test:unit": "vitest run --coverage --reporter=verbose",
-    "test:e2e": "node --disable-warning=DEP0205 ./node_modules/@playwright/test/cli.js test",
+    "test:e2e": "npm run build && node --disable-warning=DEP0205 ./node_modules/@playwright/test/cli.js test",
     "test:unit:watch": "vitest --coverage --reporter=verbose",
     "test": "npm run quality && npm run test:unit && npm run test:e2e",
     "ci": "npm run test"
