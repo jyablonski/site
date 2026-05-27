@@ -16,7 +16,7 @@ A Linux system tray application that surfaces battery levels and system metrics 
 - OpenRazer over D-Bus: a community driver for Razer peripherals on Linux that exposes device data over D-Bus, the Linux IPC system that desktop apps use to talk to system services
 - procfs: the virtual filesystem at `/proc` that the Linux kernel uses to expose process and system info as readable files, useful for things like CPU and memory stats
 
-Go is a good fit here: it compiles to a static binary with no runtime dependencies, which makes distribution across Linux distros painless for a small utility like this. It also allows for very simple `goarctis --self-update` functionality, where the app can check its GitHub releases for a new version and replace itself without needing a package manager or manual download.
+Go is a good fit here: it compiles to a single binary with no runtime dependencies, which makes distribution extremely easy. It also allows for very simple `goarctis --self-update` functionality, where the app can check its GitHub releases for a new version and replace itself without needing a package manager or manual download.
 
 ![goarctis tray menu showing Razer and HyperX battery levels, CPU and memory stats, and Docker status](/images/projects/goarctis-tray.png)
 

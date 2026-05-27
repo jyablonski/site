@@ -52,4 +52,5 @@ This was pre-AI tooling, and being able to iterate independently let me ship the
 ## What I learned
 
 - CDC with Debezium isn't terribly complex, but there are nuances worth getting right: connector options, unwrap transforms, and how deletes surface on the wire.
+- Getting data out of Kafka is straightforward with an official sink connector. The effort to manage a custom consumer & offset yourself can be worth it, but reach for the sinks first if they fit the use case.
 - One setting worth calling out: `transforms.unwrap.delete.handling.mode` set to `rewrite` drops the "before" event so Debezium only emits the full changed row to Kafka. When you're streaming into a warehouse and doing upserts and transformations on raw rows yourself, that's usually what you want.
