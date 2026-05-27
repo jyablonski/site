@@ -10,11 +10,13 @@ repo: https://github.com/jyablonski/homelab
 
 ## Why I built it
 
-Running my own homelab is a fun way to get hands-on experience with infrastructure I'd otherwise only see at work. It gives me a place to run Home Assistant for the smart devices I rely on day to day, and a low-stakes playground for learning Kubernetes, Helm, and cluster management without the risk of breaking anything important.
+I've been wanting to get more hands-on experience with Kubernetes and Helm since these are hard technologies to grok without real usage, and I've had a personal interest in smart home automation for a few years now.
+
+Running my own homelab is a fun way to get that experience with infrastructure I'd otherwise only see at work. It gives me a place to run Home Assistant for the smart devices I rely on day to day, and a low-stakes playground for learning Kubernetes, Helm, and cluster management without the risk of breaking anything important.
 
 Home Assistant is the primary hub that smart home devices connect to, and where they can all be managed in one place. Running it on my homelab means I can keep it up to date and customize it with add-ons and integrations without paying for a hosted solution.
 
-For now I'm running a single-node cluster on an old desktop, but I plan to move to multiple Beelink nodes for more capacity, redundancy, and hands-on experience with multi-node cluster management.
+For now I'm running a single-node cluster on an old desktop, but I plan to move to multiple Beelink nodes for more capacity, redundancy, and to future-proof the setup (~96GB of memory could run everything you'd ever want to throw at it in a homelab context).
 
 ## Tech stack
 
