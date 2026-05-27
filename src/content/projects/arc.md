@@ -62,6 +62,6 @@ arc ai usage
 
 ## What I learned
 
-- Go was the right choice, it compiles into a single binary with no runtime dependencies and has great cross-compilation support.
-- Self-update is a must-have, not a nice-to-have. Shipping `arc update self` meaningfully reduced friction for a tool I touch and update consistently across multiple devices.
-- Centralizing AI tool configs was the highest-leverage feature. The skills and rules sync commands started as a small idea and ended up being the thing I use `arc` for most.
+- Go is the right choice for these CLI apps, it compiles into a single binary with no runtime dependencies and has great cross-compilation support.
+- Self-update functionality is a must-have, not a nice-to-have. Shipping `arc update self` meaningfully reduced friction for a tool I touch and update consistently across multiple devices.
+- Centralizing AI tool configs was the highest-leverage feature. I can manage a single canonical set of skills across Claude, Codex, Cursor, and OpenCode, and easily monitor my usage across them in one place.
