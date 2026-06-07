@@ -14,8 +14,6 @@ interface Props {
   canonicalPath?: string;
   ogType?: "website" | "article";
   jsonLd?: Record<string, unknown>;
-  /** Widen the page shell (nav/content/footer) to fit a TOC rail. */
-  wide?: boolean;
 }
 
 const {
@@ -25,7 +23,6 @@ const {
   canonicalPath,
   ogType = "website",
   jsonLd,
-  wide = false,
 } = Astro.props;
 const pageTitle = formatSitePageTitle(title);
 const siteOrigin = Astro.site ?? site.url;
@@ -65,7 +62,7 @@ const jsonLdPayload = jsonLd ? JSON.stringify(jsonLd) : undefined;
       )
     }
   </head>
-  <body class:list={{ "shell-wide": wide }}>
+  <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
     <Nav active={active} />
     <main id="main-content" class="reading-column">

@@ -25,16 +25,16 @@
 
   /* ~760px in handoff; widened ~25% for project rows on large screens */
   --reading-width: 59.375rem;
-  /* Article pages with a TOC rail: content (--text-max) + gap + rail + gutters */
-  --reading-width-wide: 74rem;
   --text-max: 48.5rem;
   --gutter: 3.5rem;
   --gutter-mobile: 1.5rem;
   --section-gap: 3.5rem;
   --row-gap: 1.375rem;
 
-  /* Shared page-shell width; widened per-page for article + TOC layouts */
+  /* Shared page-shell width for nav, content, and footer across every page. */
   --shell-width: var(--reading-width);
+  /* TOC rail on article pages; it overflows into the right margin so the
+     content column stays aligned with the rest of the site. */
   --toc-rail: 14rem;
   --toc-gap: 3rem;
 }

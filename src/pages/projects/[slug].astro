@@ -1,11 +1,10 @@
 ---
 import { getCollection, render } from "astro:content";
+import ArticleShell from "../../components/ArticleShell.astro";
 import LinkButton from "../../components/LinkButton.astro";
 import Mermaid from "../../components/Mermaid.astro";
-import TableOfContents from "../../components/TableOfContents.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { mapProjectEntry } from "../../lib/content";
-import { hasToc } from "../../lib/toc";
 export async function getStaticPaths() {
   const entries = await getCollection("projects");
   return entries.map((entry) => ({
@@ -17,103 +16,96 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const project = mapProjectEntry(entry);
 const { Content, headings } = await render(entry);
-const showToc = hasToc(headings);
 ---
 
 <BaseLayout
   title={project.name}
   description={project.summary}
   active="projects"
-  wide={showToc}
 >
-  <div class:list={{ "article-grid": showToc }}>
-    <article class="article-main">
-      <header class="masthead">
-        <p class="meta">
-          <span>{project.kind}</span>
-          <span aria-hidden="true"> · </span>
-          <span>{project.year}</span>
-          {
-            project.readTime && (
-              <>
-                <span aria-hidden="true"> · </span>
-                <span>{project.readTime}</span>
-              </>
-            )
-          }
-        </p>
-        <h1 class="display masthead-title">{project.name}</h1>
-        <p class="masthead-lead">{project.summary}</p>
+  <ArticleShell headings={headings}>
+    <Fragment slot="masthead">
+      <p class="meta">
+        <span>{project.kind}</span>
+        <span aria-hidden="true"> · </span>
+        <span>{project.year}</span>
         {
-          (project.site || project.repo || project.tags.length > 0) && (
-            <div class="util-row">
-              {(project.site || project.repo) && (
-                <div class="util-actions">
-                  {project.site && (
-                    <LinkButton
-                      href={project.site}
-                      label="Live site"
-                      variant="site"
-                    />
-                  )}
-                  {project.repo && (
-                    <LinkButton
-                      href={project.repo}
-                      label="Repository"
-                      variant="repo"
-                    />
-                  )}
-                </div>
-              )}
-              {project.tags.length > 0 && (
-                <div class="tag-row">
-                  {project.tags.map((tag) => (
-                    <span class="chip">{tag}</span>
-                  ))}
-                </div>
-              )}
-            </div>
+          project.readTime && (
+            <>
+              <span aria-hidden="true"> · </span>
+              <span>{project.readTime}</span>
+            </>
           )
         }
-      </header>
-      <div class="article-body">
-        {
-          /*
-           * Optional images declared in a project's frontmatter `images:` array
-           * (see projectSchema). Rendered above the prose content so screenshots
-           * lead the page. `maxWidth` caps the figure for small assets like tray
-           * menus that would otherwise stretch to full width and blur; omit it to
-           * let the image fill the content column.
-           */
-          project.images.length > 0 && (
-            <section class="project-media" aria-label="Project images">
-              {project.images.map((image) => (
-                <figure
-                  class="project-figure"
-                  style={
-                    image.maxWidth
-                      ? `width: ${image.maxWidth}; max-width: 100%;`
-                      : undefined
-                  }
-                >
-                  <img src={image.src} alt={image.alt} loading="lazy" />
-                  {image.caption && <figcaption>{image.caption}</figcaption>}
-                </figure>
-              ))}
-            </section>
-          )
-        }
-        <div class="prose">
-          <Content />
-        </div>
-        <Mermaid />
-        <p class="back-link">
-          <a href="/projects/">← All projects</a>
-        </p>
-      </div>
-    </article>
-    {showToc && <TableOfContents headings={headings} />}
-  </div>
+      </p>
+      <h1 class="display masthead-title">{project.name}</h1>
+      <p class="masthead-lead">{project.summary}</p>
+      {
+        (project.site || project.repo || project.tags.length > 0) && (
+          <div class="util-row">
+            {(project.site || project.repo) && (
+              <div class="util-actions">
+                {project.site && (
+                  <LinkButton
+                    href={project.site}
+                    label="Live site"
+                    variant="site"
+                  />
+                )}
+                {project.repo && (
+                  <LinkButton
+                    href={project.repo}
+                    label="Repository"
+                    variant="repo"
+                  />
+                )}
+              </div>
+            )}
+            {project.tags.length > 0 && (
+              <div class="tag-row">
+                {project.tags.map((tag) => (
+                  <span class="chip">{tag}</span>
+                ))}
+              </div>
+            )}
+          </div>
+        )
+      }
+    </Fragment>
+    {
+      /*
+       * Optional images declared in a project's frontmatter `images:` array
+       * (see projectSchema). Rendered above the prose content so screenshots
+       * lead the page. `maxWidth` caps the figure for small assets like tray
+       * menus that would otherwise stretch to full width and blur; omit it to
+       * let the image fill the content column.
+       */
+      project.images.length > 0 && (
+        <section class="project-media" aria-label="Project images">
+          {project.images.map((image) => (
+            <figure
+              class="project-figure"
+              style={
+                image.maxWidth
+                  ? `width: ${image.maxWidth}; max-width: 100%;`
+                  : undefined
+              }
+            >
+              <img src={image.src} alt={image.alt} loading="lazy" />
+              {image.caption && <figcaption>{image.caption}</figcaption>}
+            </figure>
+          ))}
+        </section>
+      )
+    }
+    <div class="prose">
+      <Content />
+    </div>
+    <Mermaid />
+    <p class="back-link">
+      <a href="/projects/">← All projects</a>
+    </p>
+  </ArticleShell>
 </BaseLayout>
 
 <style>
