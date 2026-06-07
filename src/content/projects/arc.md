@@ -31,18 +31,14 @@ The AI tooling has grown into two related views: `arc ai usage` for live quota w
 | Cleanup      | `arc clean --orphans-only`                                                                  |
 | Packages     | `arc packages --top 25 --json`, `arc search neovim`, `arc installed --aur-only` (Arch-only) |
 | System       | `arc info`, `arc parts`, `arc sleep`                                                        |
-| Cloud / AI   | `arc aws rotate-keys`, `arc ai usage`, `arc ai tokens --group-by date`                      |
+| AI           | `arc ai usage`, `arc ai tokens`                                                             |
 | Shared tools | `arc skills sync`, `arc rules sync`                                                         |
 
-On Arch, package and system commands use pacman, yay, paccache, and systemd. On macOS, the same command surface uses Homebrew, pmset, system_profiler, and sysctl where appropriate. `arc update system`, `arc clean`, `arc packages`, `arc installed`, `arc parts`, and `arc sleep` dispatch to platform-specific implementations.
+The primary use case is updating system packages + libraries. On Arch, package and system commands use pacman, yay, paccache, and systemd. On macOS, the same command surface uses Homebrew, pmset, system_profiler, and sysctl where appropriate. `arc update system`, `arc clean`, `arc packages`, `arc installed`, `arc parts`, and `arc sleep` dispatch to platform-specific implementations.
 
-Consistent flag parsing across commands, colored help text, JSON output where it's useful, and guardrails before anything destructive runs.
+I've also included functionality to manage AI tooling and shared configs across providers. `arc ai usage` pulls live quota windows from Claude Code, Codex, and Cursor APIs to show remaining quota and reset times in one place, while `arc ai tokens` scans local session logs to estimate historical token usage and API-equivalent costs.
 
-`arc ai tokens` scans local Claude Code and Codex session logs, groups usage by provider/model, date, or session/model, and estimates what that usage would have cost at pay-as-you-go API rates. It breaks out input, output, cache-read, cache-write, and reasoning tokens, then prices those against a static model table baked into the binary. Unknown models stay visible but are marked unpriced instead of pretending to be accurate.
-
-That makes `arc ai usage` and `arc ai tokens` complementary: one answers "how much quota do I have left right now?", while the other answers "what did my actual historical usage look like, and what would it have cost through the APIs?" When local subscription prices are configured, `arc ai usage` can also print a current-month subscription ROI summary by comparing API-equivalent usage against the subscription cost.
-
-The `skills` and `rules` commands sync a single canonical set of AI tool configs to Claude, Codex, Cursor, and OpenCode, so I can edit a skill once and have it reflected everywhere instead of maintaining four near-identical copies.
+The `arc ai skills` commands sync a single canonical set of AI tool configs to Claude, Codex, Cursor, and OpenCode, so I can edit a skill once and have it reflected everywhere instead of maintaining four near-identical copies.
 
 ## Why I built it
 
@@ -52,13 +48,13 @@ The process of running system updates, cleaning up old packages / caches, or che
 # Before
 sudo pacman -Syu && yay -Syu --aur && sudo paccache -rv
 aws sts get-caller-identity && aws iam create-access-key --user-name "$USER" && aws configure
-# no single place to check ai tool usage
+# no single place to check ai tool usage or see comparable token spend
 
 # After
 arc update system
 arc aws rotate-keys
 arc ai usage
-arc ai tokens --since 2026-01-01 --group-by provider,model
+arc ai tokens --since 2026-01-01
 ```
 
 ## Tech stack
@@ -73,4 +69,3 @@ arc ai tokens --since 2026-01-01 --group-by provider,model
 - Go is the right choice for these CLI apps, it compiles into a single binary with no runtime dependencies and has great cross-compilation support.
 - Self-update functionality is a must-have, not a nice-to-have. Shipping `arc update self` meaningfully reduced friction for a tool I touch and update consistently across multiple devices.
 - Centralizing AI tool configs was the highest-leverage feature. I can manage a single canonical set of skills across Claude, Codex, Cursor, and OpenCode, monitor live quota, and sanity-check historical token spend from one place.
-- Splitting live quota tracking from local token history made the AI tooling much clearer. Quota windows and API-equivalent pricing answer different questions, and putting both behind `arc ai` keeps that distinction explicit.

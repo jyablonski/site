@@ -10,7 +10,7 @@ repo: https://github.com/jyablonski/lotus
 
 ## What it is
 
-A full-stack journaling monorepo. Users write entries, and backend services enrich them with topics and sentiment via ML and LLMs. It's a deliberate learning lab for microservices, observability, and MLOps, not a shipped consumer product.
+A full-stack journaling monorepo. Users write entries, and backend services enrich them with topics and sentiment via ML and LLMs. It's a deliberate learning lab for microservices, observability, and MLOps concepts, not a shipped consumer product.
 
 ## What it does
 
