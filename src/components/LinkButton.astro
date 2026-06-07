@@ -1,0 +1,68 @@
+---
+/** Masthead utility button: leading icon, label, trailing external-link mark. */
+interface Props {
+  href: string;
+  label: string;
+  variant: "site" | "repo";
+}
+
+const { href, label, variant } = Astro.props;
+---
+
+<a class="btn-link" href={href} rel="noopener" target="_blank">
+  {
+    variant === "site" ? (
+      <svg
+        class="btn-icon"
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <circle cx="12" cy="12" r="9" />
+        <path d="M3 12h18" />
+        <path d="M12 3c2.6 2.6 2.6 15.4 0 18" />
+        <path d="M12 3c-2.6 2.6-2.6 15.4 0 18" />
+      </svg>
+    ) : (
+      <svg
+        class="btn-icon"
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <line x1="6" y1="3" x2="6" y2="15" />
+        <circle cx="18" cy="6" r="3" />
+        <circle cx="6" cy="18" r="3" />
+        <path d="M18 9a9 9 0 0 1-9 9" />
+      </svg>
+    )
+  }
+  <span>{label}</span>
+  <svg
+    class="btn-ext"
+    width="12"
+    height="12"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <line x1="7" y1="17" x2="17" y2="7"></line>
+    <polyline points="7 7 17 7 17 17"></polyline>
+  </svg>
+</a>

@@ -1,5 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
+import ArticleShell from "../../components/ArticleShell.astro";
+import LinkButton from "../../components/LinkButton.astro";
 import Mermaid from "../../components/Mermaid.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { mapProjectEntry } from "../../lib/content";
@@ -13,7 +15,7 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const project = mapProjectEntry(entry);
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
 ---
 
 <BaseLayout
@@ -21,8 +23,8 @@ const { Content } = await render(entry);
   description={project.summary}
   active="projects"
 >
-  <article>
-    <header class="project-header">
+  <ArticleShell headings={headings}>
+    <Fragment slot="masthead">
       <p class="meta">
         <span>{project.kind}</span>
         <span aria-hidden="true"> · </span>
@@ -36,30 +38,66 @@ const { Content } = await render(entry);
           )
         }
       </p>
-      <h1 class="display">{project.name}</h1>
-      <p class="project-lead">{project.summary}</p>
+      <h1 class="display masthead-title">{project.name}</h1>
+      <p class="masthead-lead">{project.summary}</p>
       {
-        (project.site || project.repo) && (
-          <p class="project-links">
-            {project.site && <a href={project.site}>Live site</a>}
-            {project.site && project.repo && (
-              <span aria-hidden="true"> · </span>
+        (project.site || project.repo || project.tags.length > 0) && (
+          <div class="util-row">
+            {(project.site || project.repo) && (
+              <div class="util-actions">
+                {project.site && (
+                  <LinkButton
+                    href={project.site}
+                    label="Live site"
+                    variant="site"
+                  />
+                )}
+                {project.repo && (
+                  <LinkButton
+                    href={project.repo}
+                    label="Repository"
+                    variant="repo"
+                  />
+                )}
+              </div>
             )}
-            {project.repo && <a href={project.repo}>Repository</a>}
-          </p>
-        )
-      }
-      {
-        project.tags.length > 0 && (
-          <div class="tag-row">
-            {project.tags.map((tag) => (
-              <span class="chip">{tag}</span>
-            ))}
+            {project.tags.length > 0 && (
+              <div class="tag-row">
+                {project.tags.map((tag) => (
+                  <span class="chip">{tag}</span>
+                ))}
+              </div>
+            )}
           </div>
         )
       }
-    </header>
-    <hr class="hairline content-divider" />
+    </Fragment>
+    {
+      /*
+       * Optional images declared in a project's frontmatter `images:` array
+       * (see projectSchema). Rendered above the prose content so screenshots
+       * lead the page. `maxWidth` caps the figure for small assets like tray
+       * menus that would otherwise stretch to full width and blur; omit it to
+       * let the image fill the content column.
+       */
+      project.images.length > 0 && (
+        <section class="project-media" aria-label="Project images">
+          {project.images.map((image) => (
+            <figure
+              class="project-figure"
+              style={
+                image.maxWidth
+                  ? `width: ${image.maxWidth}; max-width: 100%;`
+                  : undefined
+              }
+            >
+              <img src={image.src} alt={image.alt} loading="lazy" />
+              {image.caption && <figcaption>{image.caption}</figcaption>}
+            </figure>
+          ))}
+        </section>
+      )
+    }
     <div class="prose">
       <Content />
     </div>
@@ -67,29 +105,36 @@ const { Content } = await render(entry);
     <p class="back-link">
       <a href="/projects/">← All projects</a>
     </p>
-  </article>
+  </ArticleShell>
 </BaseLayout>
 
 <style>
-  .project-header {
-    margin-bottom: 0;
-  }
-
-  .project-lead {
-    color: var(--text-dim);
-    font-size: 0.96875rem;
-    line-height: 1.55;
-    margin: 1rem 0;
+  .project-media {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.75rem;
     max-width: var(--text-max);
   }
 
-  .project-links {
-    font-size: var(--size-meta);
-    margin: 0 0 1rem;
+  .project-figure {
+    margin: 0;
   }
 
-  .tag-row {
-    margin-top: 1rem;
+  .project-figure img {
+    background: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    display: block;
+    height: auto;
+    width: 100%;
+  }
+
+  .project-figure figcaption {
+    color: var(--text-faint);
+    font-size: var(--size-meta);
+    line-height: 1.45;
+    margin-top: 0.5rem;
   }
 
   .back-link {

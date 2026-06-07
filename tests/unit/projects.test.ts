@@ -20,6 +20,7 @@ const sample: ProjectEntry[] = [
     summary: "",
     tags: [],
     featured: false,
+    images: [],
   },
   {
     slug: "b",
@@ -29,6 +30,7 @@ const sample: ProjectEntry[] = [
     summary: "",
     tags: [],
     featured: true,
+    images: [],
   },
   {
     slug: "c",
@@ -38,6 +40,7 @@ const sample: ProjectEntry[] = [
     summary: "",
     tags: [],
     featured: true,
+    images: [],
   },
 ];
 
@@ -67,6 +70,7 @@ describe("projects", () => {
         summary: "",
         tags: [],
         featured: true,
+        images: [],
       },
       {
         slug: HIGHLIGHTED_PROJECT_SLUG,
@@ -76,6 +80,7 @@ describe("projects", () => {
         summary: "",
         tags: [],
         featured: true,
+        images: [],
       },
     ];
 
@@ -95,6 +100,7 @@ describe("projects", () => {
         summary: "",
         tags: [],
         featured: true,
+        images: [],
       },
       {
         slug: "lotus",
@@ -104,6 +110,7 @@ describe("projects", () => {
         summary: "",
         tags: [],
         featured: true,
+        images: [],
       },
       {
         slug: HIGHLIGHTED_PROJECT_SLUG,
@@ -113,6 +120,7 @@ describe("projects", () => {
         summary: "",
         tags: [],
         featured: true,
+        images: [],
       },
     ];
 
@@ -172,6 +180,7 @@ describe("projects", () => {
         summary: "",
         tags: [],
         featured: true,
+        images: [],
       },
     ];
 

@@ -1,0 +1,103 @@
+---
+import type { MarkdownHeading } from "astro";
+import { getTocItems } from "../lib/toc";
+
+/**
+ * Sticky "On this page" rail. Render inside an `.article-grid` so it occupies
+ * the right column; it self-hides below the grid's breakpoint. Active-section
+ * highlighting is wired up client-side from scroll position.
+ */
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+const items = getTocItems(headings);
+---
+
+{
+  items.length > 0 && (
+    <nav class="toc-rail" aria-label="On this page">
+      <p class="section-label">On this page</p>
+      <ul class="toc-list">
+        {items.map((heading) => (
+          <li class:list={{ "toc-sub": heading.depth === 3 }}>
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
+<script>
+  const rail = document.querySelector<HTMLElement>(".toc-rail");
+  const links = rail ? [...rail.querySelectorAll<HTMLAnchorElement>("a")] : [];
+
+  if (links.length) {
+    const linkById = new Map(
+      links.map((link) => [decodeURIComponent(link.hash.slice(1)), link]),
+    );
+    const headings = [
+      ...document.querySelectorAll<HTMLElement>(".prose h2, .prose h3"),
+    ].filter((heading) => linkById.has(heading.id));
+
+    let activeId: string | undefined;
+    const setActive = (id: string | undefined) => {
+      if (!id || id === activeId) return;
+      activeId = id;
+      for (const link of links) link.classList.remove("is-active");
+      linkById.get(id)?.classList.add("is-active");
+    };
+
+    // Active = the last heading scrolled past this line below the sticky nav.
+    const ACTIVATION_OFFSET = 100;
+    // Clicking a link jumps the heading to the top, which scroll-spy alone
+    // can't always reach (short sections near the page end). Briefly trust the
+    // click so the highlight follows it before position tracking resumes.
+    let lockUntil = 0;
+
+    const updateActive = () => {
+      if (Date.now() < lockUntil) return;
+      // At the page bottom the last heading may never reach the line, so pin it.
+      const scrolledToEnd =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 2;
+      if (scrolledToEnd) {
+        setActive(headings.at(-1)?.id);
+        return;
+      }
+      let current = headings[0]?.id;
+      for (const heading of headings) {
+        if (heading.getBoundingClientRect().top - ACTIVATION_OFFSET <= 0) {
+          current = heading.id;
+        } else {
+          break;
+        }
+      }
+      setActive(current);
+    };
+
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        updateActive();
+      });
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+
+    for (const link of links) {
+      link.addEventListener("click", () => {
+        setActive(decodeURIComponent(link.hash.slice(1)));
+        lockUntil = Date.now() + 600;
+      });
+    }
+
+    updateActive();
+  }
+</script>

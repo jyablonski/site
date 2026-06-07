@@ -109,4 +109,29 @@ test.describe("typography alignment", () => {
 
     expect(bodyFont.toLowerCase()).toMatch(/geist|system-ui|sans-serif/);
   });
+
+  test("article pages share the home page's column alignment", async ({
+    page,
+  }) => {
+    const leftOf = (selector: string) =>
+      page
+        .locator(selector)
+        .first()
+        .evaluate((el) => Math.round(el.getBoundingClientRect().left));
+
+    await page.goto("/");
+    const homeBrand = await leftOf(".site-nav a");
+    const homeContent = await leftOf(".hero-subtitle");
+
+    await page.goto("/projects/nba-elt-pipeline/");
+    // The TOC rail overflows into the right margin, so the nav and content keep
+    // the same left edge as every other page rather than shifting outward.
+    expect(await leftOf(".site-nav a")).toBe(homeBrand);
+    expect(await leftOf(".masthead-title")).toBe(homeContent);
+
+    const overflowX = await page.evaluate(
+      () => document.documentElement.scrollWidth > window.innerWidth,
+    );
+    expect(overflowX).toBe(false);
+  });
 });

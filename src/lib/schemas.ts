@@ -63,6 +63,16 @@ export const projectSchema = z.object({
   summary: trimmed,
   tags: z.array(tagSchema).default([]),
   featured: z.boolean().default(false),
+  images: z
+    .array(
+      z.object({
+        src: trimmed,
+        alt: trimmed,
+        caption: trimmed.optional(),
+        maxWidth: trimmed.optional(),
+      }),
+    )
+    .default([]),
   readTime: readTimeSchema.optional(),
   repo: z.url().optional(),
   site: z.url().optional(),

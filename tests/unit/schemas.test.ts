@@ -51,8 +51,18 @@ describe("schemas", () => {
       summary: "End to end pipeline",
       tags: ["Python"],
       featured: true,
+      images: [
+        {
+          src: "/images/projects/example.png",
+          alt: "example project screenshot",
+          caption: "Optional caption",
+          maxWidth: "16rem",
+        },
+      ],
     });
     expect(result.featured).toBe(true);
+    expect(result.images).toHaveLength(1);
+    expect(result.images[0]?.maxWidth).toBe("16rem");
   });
 
   it("accepts project year ranges and present", () => {

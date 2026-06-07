@@ -62,7 +62,7 @@ a:hover {
 
 .reading-column {
   margin: 0 auto;
-  max-width: var(--reading-width);
+  max-width: var(--shell-width);
   padding: 2rem var(--gutter) 3rem;
   width: 100%;
 }
@@ -205,6 +205,138 @@ a:hover {
   margin-top: 0.75rem;
 }
 
+/* Article + TOC two-column layout (single post / project).
+   The content column keeps the site reading width and stays in the normal
+   centered column; the rail overflows into the right margin so detail pages
+   line up with the home + list pages instead of widening the whole shell. */
+.article-grid {
+  align-items: start;
+  display: grid;
+  gap: var(--toc-gap);
+  grid-template-columns: minmax(0, var(--text-max)) var(--toc-rail);
+  width: calc(var(--text-max) + var(--toc-gap) + var(--toc-rail));
+}
+
+.article-main {
+  min-width: 0;
+}
+
+/* Consolidated masthead: meta -> title -> description -> utility row */
+.masthead-title {
+  margin-top: 0.75rem;
+}
+
+.masthead-lead {
+  color: var(--text-dim);
+  font-size: var(--size-body);
+  line-height: 1.6;
+  margin: 0.75rem 0 0;
+  max-width: var(--text-max);
+}
+
+.util-row {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  justify-content: space-between;
+  margin-top: 1.75rem;
+}
+
+.util-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.btn-link {
+  align-items: center;
+  border: 1px solid var(--rule-strong);
+  border-radius: 6px;
+  color: var(--text);
+  display: inline-flex;
+  font-size: var(--size-meta);
+  font-weight: 500;
+  gap: 0.45rem;
+  letter-spacing: 0.01em;
+  padding: 0.5rem 0.85rem;
+  text-decoration: none;
+}
+
+.btn-link:hover {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--accent-dim);
+  text-decoration: none;
+}
+
+.btn-link svg {
+  flex-shrink: 0;
+}
+
+.btn-link .btn-icon {
+  color: var(--accent);
+}
+
+.btn-link .btn-ext {
+  color: var(--text-faint);
+}
+
+/* The article body starts immediately after the masthead (no divider rule). */
+.article-body {
+  margin-top: 2.75rem;
+}
+
+/* Sticky "On this page" rail */
+.toc-rail {
+  align-self: start;
+  position: sticky;
+  top: 4.5rem;
+}
+
+.toc-list {
+  border-left: 1px solid var(--rule-strong);
+  list-style: none;
+  margin: 0.85rem 0 0;
+  padding: 0;
+}
+
+.toc-rail a {
+  border-left: 2px solid transparent;
+  color: var(--text-dim);
+  display: block;
+  font-size: var(--size-meta);
+  line-height: 1.4;
+  margin-left: -1px;
+  padding: 0.3rem 0 0.3rem 0.9rem;
+  text-decoration: none;
+}
+
+.toc-sub a {
+  padding-left: 1.7rem;
+}
+
+.toc-rail a:hover {
+  color: var(--text);
+}
+
+.toc-rail a.is-active {
+  border-left-color: var(--accent);
+  color: var(--text);
+}
+
+/* Below this width the rail no longer fits in the right margin without
+   overflowing the viewport, so collapse to the single reading column. */
+@media (max-width: 1279px) {
+  .article-grid {
+    grid-template-columns: minmax(0, 1fr);
+    width: auto;
+  }
+
+  .toc-rail {
+    display: none;
+  }
+}
+
 /* Prose (single post / project) */
 .prose {
   font-size: 1.03125rem;
@@ -324,6 +456,7 @@ a:hover {
 
 .prose table {
   border-collapse: collapse;
+  margin: 0 0 1.75em;
   width: 100%;
 }
 

@@ -1,0 +1,31 @@
+---
+import type { MarkdownHeading } from "astro";
+import TableOfContents from "./TableOfContents.astro";
+import { hasToc } from "../lib/toc";
+
+/**
+ * Two-column article scaffold shared by project and post detail pages: a
+ * consolidated masthead (via the `masthead` slot) above the body content
+ * (default slot), with a sticky "On this page" rail once the content has
+ * enough headings. The rail overflows into the right margin (see
+ * `.article-grid`) so detail pages stay aligned with the rest of the site.
+ */
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+const showToc = hasToc(headings);
+---
+
+<div class:list={{ "article-grid": showToc }}>
+  <article class="article-main">
+    <header class="masthead">
+      <slot name="masthead" />
+    </header>
+    <div class="article-body">
+      <slot />
+    </div>
+  </article>
+  {showToc && <TableOfContents headings={headings} />}
+</div>

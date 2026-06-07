@@ -38,7 +38,17 @@
       },
     });
 
-    await mermaid.run({ nodes: [...nodes] as HTMLElement[] });
+    for (const node of [...nodes] as HTMLElement[]) {
+      try {
+        await mermaid.run({ nodes: [node] });
+      } catch (error) {
+        console.error(
+          "Failed to render Mermaid diagram",
+          error,
+          node.textContent,
+        );
+      }
+    }
   }
 
   initMermaid();
