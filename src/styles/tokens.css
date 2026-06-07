@@ -25,9 +25,16 @@
 
   /* ~760px in handoff; widened ~25% for project rows on large screens */
   --reading-width: 59.375rem;
+  /* Article pages with a TOC rail: content (--text-max) + gap + rail + gutters */
+  --reading-width-wide: 74rem;
   --text-max: 48.5rem;
   --gutter: 3.5rem;
   --gutter-mobile: 1.5rem;
   --section-gap: 3.5rem;
   --row-gap: 1.375rem;
+
+  /* Shared page-shell width; widened per-page for article + TOC layouts */
+  --shell-width: var(--reading-width);
+  --toc-rail: 14rem;
+  --toc-gap: 3rem;
 }

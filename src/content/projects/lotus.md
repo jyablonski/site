@@ -28,7 +28,8 @@ flowchart LR
   GRPC --> AN[Python service]
   GRPC --> PG[(Postgres)]
   AN --> PG
-  AN --> ML[MLflow / Dagster]
+  AN --> ML[MLflow]
+  PG --> DAG[Dagster]
 ```
 
 ## Why I built it

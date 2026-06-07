@@ -8,15 +8,61 @@ featured: true
 repo: https://github.com/jyablonski/homelab
 ---
 
+## What it is
+
+My homelab is a single-node K3s cluster running on an old desktop with 32GB of RAM. It's managed with Helmfile, using a mix of third-party charts and a custom Helm chart for my in-house apps. The cluster runs Home Assistant for smart home device management, along with a monitoring stack of Prometheus, Grafana, Loki, and Promtail. Longhorn provides persistent storage for stateful workloads, and Traefik and MetalLB handle ingress and load balancing.
+
+The main use case is a self-hosted environment for Home Assistant, which acts as the central hub for all of my smart home devices. Beyond that, it doubles as a low-stakes playground for learning Kubernetes, Helm, and cluster management.
+
 ## Why I built it
 
-I've been wanting to get more hands-on experience with Kubernetes and Helm since these are hard technologies to grok without real usage, and I've had a personal interest in smart home automation for a few years now.
+I've wanted hands-on experience with Kubernetes and Helm for a while. These are hard technologies to grok without real usage, and I've had a personal interest in smart home automation for a few years now. A homelab lets me get that experience with infrastructure I'd otherwise only touch at work, while giving me a place to run the smart devices I rely on day to day.
 
-Running my own homelab is a fun way to get that experience with infrastructure I'd otherwise only see at work. It gives me a place to run Home Assistant for the smart devices I rely on day to day, and a low-stakes playground for learning Kubernetes, Helm, and cluster management without the risk of breaking anything important.
+It's also where I learned the value of a golden path for deployments, which turned out to be the most useful idea to come out of the project. More on that below.
 
-Home Assistant is the primary hub that smart home devices connect to, and where they can all be managed in one place. Running it on my homelab means I can keep it up to date and customize it with add-ons and integrations without paying for a hosted solution.
+## Helm chart
 
-For now I'm running a single-node cluster on an old desktop, but I plan to move to multiple Beelink nodes for more capacity, redundancy, and to future-proof the setup (~96GB of memory could run everything you'd ever want to throw at it in a homelab context).
+Third-party charts are easy to deploy: you use them as-is and configure them through `values.yaml`. My own Python and Go apps are the harder case, since there's no off-the-shelf chart, and handwriting the K8s resources for each one gets painful and repetitive fast.
+
+So I built a custom chart in `charts/app` that all of my in-house apps share. Helm renders a single `values.yaml` into everything an app needs, including Deployments, Services, Ingresses, PersistentVolumeClaims, and ServiceMonitors, with optional autoscaling, ingress, and persistent storage. To stand up something new, I just have to create a `Dockerfile` for it and set a few specific parameters in `values.yaml`:
+
+```yaml
+env:
+  API_ENV: "production"
+  API_LOG_LEVEL: "INFO"
+  API_ROOT_PATH: "/api"
+
+resources:
+  requests:
+    cpu: 25m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+
+service:
+  port: 8000
+
+ingress:
+  enabled: true
+  className: traefik
+  hosts:
+    - host: apps.home
+      paths:
+        - path: /api
+          pathType: Prefix
+
+serviceMonitor:
+  enabled: true
+```
+
+This pattern has been a huge time-saver and keeps my in-house apps consistent with each other. It's also the clearest takeaway I've carried into work, where I now make the case for the same golden-path approach and for self-hosting on Kubernetes over paid SaaS where it fits.
+
+## What's next
+
+The current single-node setup is enough to learn on, but it's a single point of failure and limited on resources. My plan is to expand the cluster to three mini PC nodes with 96GB of memory total. That gives me a real multi-node environment to work with and should help future-proof the cluster for anything I want to throw at it.
+
+The bigger goal is to move my long-running personal apps off cloud infrastructure and onto the cluster. Right now those run on paid cloud services, and a three-node homelab gives me the capacity and redundancy to host them myself, cut recurring costs, and keep everything under the same golden-path deployment pattern I already use for my in-house apps.
 
 ## Tech stack
 
@@ -33,6 +79,6 @@ For now I'm running a single-node cluster on an old desktop, but I plan to move 
 
 ## What I learned
 
-- Git as a source of truth has real advantages. It forces good discipline around configuration, secrets management, and reproducibility.
-- Helmfile and Helm are powerful once you get familiar with them. I came out of this with much deeper confidence in self-hosting on Kubernetes, which I plan to use at work to advocate for self-hosting over paid SaaS where it makes sense.
-- A golden path for deploying services is a must-have. I have a custom Helm chart that all of my in-house apps use, which means I can deploy a new service and configure autoscaling, ingress, and storage with a single `values.yaml`.
+- Treating Git as the source of truth has real advantages. It enforces discipline around configuration, secrets management, and reproducibility.
+- Helmfile and Helm are powerful once they click. Working through them gave me much deeper confidence in self-hosting on Kubernetes.
+- A golden path for deploying services is a must-have. The custom chart turned per-service Kubernetes boilerplate into a single `values.yaml`, which is the change that made everything else easier to build and maintain.

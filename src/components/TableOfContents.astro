@@ -1,0 +1,75 @@
+---
+import type { MarkdownHeading } from "astro";
+import { getTocItems } from "../lib/toc";
+
+/**
+ * Sticky "On this page" rail. Render inside an `.article-grid` so it occupies
+ * the right column; it self-hides below the grid's breakpoint. Active-section
+ * highlighting is wired up client-side via IntersectionObserver.
+ */
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+const items = getTocItems(headings);
+---
+
+{
+  items.length > 0 && (
+    <nav class="toc-rail" aria-label="On this page">
+      <p class="section-label">On this page</p>
+      <ul class="toc-list">
+        {items.map((heading) => (
+          <li class:list={{ "toc-sub": heading.depth === 3 }}>
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
+<script>
+  const rail = document.querySelector<HTMLElement>(".toc-rail");
+  const links = rail ? [...rail.querySelectorAll<HTMLAnchorElement>("a")] : [];
+
+  if (links.length) {
+    const linkById = new Map(
+      links.map((link) => [decodeURIComponent(link.hash.slice(1)), link]),
+    );
+    const headings = [
+      ...document.querySelectorAll<HTMLElement>(".prose h2, .prose h3"),
+    ].filter((heading) => linkById.has(heading.id));
+
+    let activeId: string | undefined;
+    const setActive = (id: string | undefined) => {
+      if (!id || id === activeId) return;
+      activeId = id;
+      for (const link of links) link.classList.remove("is-active");
+      linkById.get(id)?.classList.add("is-active");
+    };
+
+    // Default to the first section so the rail is never blank at the top.
+    setActive(headings[0]?.id);
+
+    const visible = new Set<string>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const id = (entry.target as HTMLElement).id;
+          if (entry.isIntersecting) visible.add(id);
+          else visible.delete(id);
+        }
+        // Highlight the topmost heading inside the activation band; if none is
+        // in view (mid-section), keep the previous active link.
+        const current = headings.find((heading) => visible.has(heading.id));
+        if (current) setActive(current.id);
+      },
+      // Activation band: just below the nav down to ~30% of the viewport.
+      { rootMargin: "-80px 0px -70% 0px" },
+    );
+
+    for (const heading of headings) observer.observe(heading);
+  }
+</script>

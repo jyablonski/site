@@ -17,6 +17,7 @@ export function mapProjectEntry(entry: ProjectCollectionEntry): ProjectEntry {
     summary: entry.data.summary,
     tags: entry.data.tags,
     featured: entry.data.featured,
+    images: entry.data.images ?? [],
     readTime: resolveContentReadTime(entry.body ?? "", entry.data.readTime),
     repo: entry.data.repo,
     site: entry.data.site,

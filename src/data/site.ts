@@ -16,12 +16,12 @@ export const site = {
 } as const;
 
 export const homeContent = {
-  headline: "Building ",
-  headlineAccent: "quiet, reliable",
-  headlineEnd: " data systems",
+  headline: "Hey Im ",
+  headlineAccent: "Jacob",
+  headlineEnd: "",
   subtitle: [
     "Data engineer in Southern California. I build data platforms end-to-end ",
-    "and run a few long-running side projects. ",
+    "and host a few long-running side projects. ",
     "Lately I've been writing more Go, running things on Kubernetes, and ",
     "building full-stack apps to get more hands-on experience beyond the data layer.",
   ].join(""),

@@ -14,13 +14,13 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
 
 const allPosts = await loadPublishedPosts();
 const current: PostEntry = mapPostEntry(entry);
 const { prev, next } = getAdjacentPosts(allPosts, entry.id);
 ---
 
-<PostLayout post={current} prev={prev} next={next}>
+<PostLayout post={current} prev={prev} next={next} headings={headings}>
   <Content />
 </PostLayout>

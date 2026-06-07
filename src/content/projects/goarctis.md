@@ -6,6 +6,10 @@ summary: Linux system tray app for wireless device battery levels where vendor s
 tags: [Go, Linux]
 featured: false
 repo: https://github.com/jyablonski/goarctis
+images:
+  - src: /images/projects/goarctis-tray.png
+    alt: goarctis tray menu showing Razer and HyperX battery levels, CPU and memory stats, and Docker status
+    maxWidth: 16rem
 ---
 
 ## What it is
@@ -17,8 +21,6 @@ A Linux system tray application that surfaces battery levels and system metrics 
 - procfs: the virtual filesystem at `/proc` that the Linux kernel uses to expose process and system info as readable files, useful for things like CPU and memory stats
 
 Go is a good fit here: it compiles to a single binary with no runtime dependencies, which makes distribution extremely easy. It also allows for very simple `goarctis --self-update` functionality, where the app can check its GitHub releases for a new version and replace itself without needing a package manager or manual download.
-
-![goarctis tray menu showing Razer and HyperX battery levels, CPU and memory stats, and Docker status](/images/projects/goarctis-tray.png)
 
 ## What it does
 

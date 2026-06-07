@@ -62,9 +62,15 @@ a:hover {
 
 .reading-column {
   margin: 0 auto;
-  max-width: var(--reading-width);
+  max-width: var(--shell-width);
   padding: 2rem var(--gutter) 3rem;
   width: 100%;
+}
+
+/* Project/post detail pages widen the shell so the TOC rail fits to the
+   right of the content column while staying aligned with the nav + footer. */
+body.shell-wide {
+  --shell-width: var(--reading-width-wide);
 }
 
 @media (max-width: 720px) {
@@ -203,6 +209,134 @@ a:hover {
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 0.75rem;
+}
+
+/* Article + TOC two-column layout (single post / project) */
+.article-grid {
+  align-items: start;
+  display: grid;
+  gap: var(--toc-gap);
+  grid-template-columns: minmax(0, var(--text-max)) minmax(
+      11rem,
+      var(--toc-rail)
+    );
+}
+
+.article-main {
+  min-width: 0;
+}
+
+/* Consolidated masthead: meta -> title -> description -> utility row */
+.masthead-title {
+  margin-top: 0.75rem;
+}
+
+.masthead-lead {
+  color: var(--text-dim);
+  font-size: var(--size-body);
+  line-height: 1.6;
+  margin: 0.75rem 0 0;
+  max-width: var(--text-max);
+}
+
+.util-row {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  justify-content: space-between;
+  margin-top: 1.75rem;
+}
+
+.util-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.btn-link {
+  align-items: center;
+  border: 1px solid var(--rule-strong);
+  border-radius: 6px;
+  color: var(--text);
+  display: inline-flex;
+  font-size: var(--size-meta);
+  font-weight: 500;
+  gap: 0.45rem;
+  letter-spacing: 0.01em;
+  padding: 0.5rem 0.85rem;
+  text-decoration: none;
+}
+
+.btn-link:hover {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--accent-dim);
+  text-decoration: none;
+}
+
+.btn-link svg {
+  flex-shrink: 0;
+}
+
+.btn-link .btn-icon {
+  color: var(--accent);
+}
+
+.btn-link .btn-ext {
+  color: var(--text-faint);
+}
+
+/* The article body starts immediately after the masthead (no divider rule). */
+.article-body {
+  margin-top: 2.75rem;
+}
+
+/* Sticky "On this page" rail */
+.toc-rail {
+  align-self: start;
+  position: sticky;
+  top: 4.5rem;
+}
+
+.toc-list {
+  border-left: 1px solid var(--rule-strong);
+  list-style: none;
+  margin: 0.85rem 0 0;
+  padding: 0;
+}
+
+.toc-rail a {
+  border-left: 2px solid transparent;
+  color: var(--text-dim);
+  display: block;
+  font-size: var(--size-meta);
+  line-height: 1.4;
+  margin-left: -1px;
+  padding: 0.3rem 0 0.3rem 0.9rem;
+  text-decoration: none;
+}
+
+.toc-sub a {
+  padding-left: 1.7rem;
+}
+
+.toc-rail a:hover {
+  color: var(--text);
+}
+
+.toc-rail a.is-active {
+  border-left-color: var(--accent);
+  color: var(--text);
+}
+
+@media (max-width: 1024px) {
+  .article-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .toc-rail {
+    display: none;
+  }
 }
 
 /* Prose (single post / project) */
