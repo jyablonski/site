@@ -5,7 +5,7 @@ import { getTocItems } from "../lib/toc";
 /**
  * Sticky "On this page" rail. Render inside an `.article-grid` so it occupies
  * the right column; it self-hides below the grid's breakpoint. Active-section
- * highlighting is wired up client-side via IntersectionObserver.
+ * highlighting is wired up client-side from scroll position.
  */
 interface Props {
   headings: MarkdownHeading[];
@@ -50,26 +50,54 @@ const items = getTocItems(headings);
       linkById.get(id)?.classList.add("is-active");
     };
 
-    // Default to the first section so the rail is never blank at the top.
-    setActive(headings[0]?.id);
+    // Active = the last heading scrolled past this line below the sticky nav.
+    const ACTIVATION_OFFSET = 100;
+    // Clicking a link jumps the heading to the top, which scroll-spy alone
+    // can't always reach (short sections near the page end). Briefly trust the
+    // click so the highlight follows it before position tracking resumes.
+    let lockUntil = 0;
 
-    const visible = new Set<string>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          const id = (entry.target as HTMLElement).id;
-          if (entry.isIntersecting) visible.add(id);
-          else visible.delete(id);
+    const updateActive = () => {
+      if (Date.now() < lockUntil) return;
+      // At the page bottom the last heading may never reach the line, so pin it.
+      const scrolledToEnd =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 2;
+      if (scrolledToEnd) {
+        setActive(headings.at(-1)?.id);
+        return;
+      }
+      let current = headings[0]?.id;
+      for (const heading of headings) {
+        if (heading.getBoundingClientRect().top - ACTIVATION_OFFSET <= 0) {
+          current = heading.id;
+        } else {
+          break;
         }
-        // Highlight the topmost heading inside the activation band; if none is
-        // in view (mid-section), keep the previous active link.
-        const current = headings.find((heading) => visible.has(heading.id));
-        if (current) setActive(current.id);
-      },
-      // Activation band: just below the nav down to ~30% of the viewport.
-      { rootMargin: "-80px 0px -70% 0px" },
-    );
+      }
+      setActive(current);
+    };
 
-    for (const heading of headings) observer.observe(heading);
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        updateActive();
+      });
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+
+    for (const link of links) {
+      link.addEventListener("click", () => {
+        setActive(decodeURIComponent(link.hash.slice(1)));
+        lockUntil = Date.now() + 600;
+      });
+    }
+
+    updateActive();
   }
 </script>

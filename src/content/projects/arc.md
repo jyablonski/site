@@ -10,8 +10,9 @@ images:
   - src: /images/projects/arc-ai-usage.png
     alt: arc ai usage output showing remaining quota across Claude, Codex, and Cursor
     caption: Tracking usage windows across Claude, Codex, and Cursor in one place.
-  - src: /images/projects/arc-skills-list.png
-    alt: arc skills list output showing canonical skills synced to Claude, Codex, Cursor, and OpenCode
+  - src: /images/projects/arc-ai-tokens.png
+    alt: arc ai tokens output showing historical token usage and estimated costs
+    caption: Scanning local session logs to estimate historical token usage and API-equivalent costs.
 ---
 
 ## What it is

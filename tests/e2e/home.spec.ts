@@ -4,7 +4,7 @@ test("home page shows hero heading and featured work", async ({ page }) => {
   await page.goto("/");
   await expect(
     page.getByRole("heading", {
-      name: /Building\s+quiet, reliable\s+data systems/i,
+      name: /Hey Im\s+Jacob/i,
       level: 1,
     }),
   ).toBeVisible();
