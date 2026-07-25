@@ -365,7 +365,7 @@ a:hover {
   margin: 0.35em 0;
 }
 
-.prose li strong {
+.prose strong {
   color: var(--text);
   font-weight: 600;
 }

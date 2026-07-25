@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { openPublishedPostMatching } from "./helpers/posts";
 
 test("project masthead shows link buttons and tags in one row", async ({
   page,
@@ -57,4 +58,29 @@ test("on-this-page rail tracks the active section while scrolling", async ({
 
   await page.evaluate(() => window.scrollTo(0, 0));
   await expect(rail.locator("a.is-active")).toHaveText("What it is");
+});
+
+test("post table of contents mirrors its rendered headings", async ({
+  page,
+}) => {
+  await openPublishedPostMatching(page, [".toc-rail", ".prose h3"]);
+
+  const headings = page.locator(".prose h2, .prose h3");
+  const headingText = (await headings.allTextContents()).map((text) =>
+    text.trim(),
+  );
+  const tocText = (await page.locator(".toc-rail a").allTextContents()).map(
+    (text) => text.trim(),
+  );
+  expect(tocText).toEqual(headingText);
+
+  const subheadingIds = await page
+    .locator(".prose h3")
+    .evaluateAll((elements) => elements.map((element) => `#${element.id}`));
+  const nestedLinks = await page
+    .locator(".toc-rail .toc-sub a")
+    .evaluateAll((elements) =>
+      elements.map((element) => element.getAttribute("href")),
+    );
+  expect(nestedLinks).toEqual(subheadingIds);
 });
