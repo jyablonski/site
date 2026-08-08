@@ -5,9 +5,10 @@ import { getProjectHref } from "../lib/projects";
 interface Props {
   project: ProjectEntry;
   highlighted?: boolean;
+  kindLabel?: string;
 }
 
-const { project, highlighted = false } = Astro.props;
+const { project, highlighted = false, kindLabel } = Astro.props;
 const href = getProjectHref(project);
 ---
 
@@ -24,9 +25,11 @@ const href = getProjectHref(project);
       <span class="project-highlight-label meta">Flagship project</span>
     )
   }
-  <div class="entry-row-top project-row-top">
+  <div class="entry-row-top entry-row-top--with-kind project-row-top">
     <span class="project-name">{project.name}</span>
-    <span class="project-kind">{project.kind}</span>
+    <span class="entry-row-kind project-kind">
+      {kindLabel ?? project.kind}
+    </span>
     <span class="entry-row-meta project-meta meta">
       <span class="project-year">{project.year}</span>
       {
@@ -71,16 +74,6 @@ const href = getProjectHref(project);
     text-transform: uppercase;
   }
 
-  .project-row-top {
-    grid-template-columns: 1fr auto;
-  }
-
-  @media (min-width: 521px) {
-    .project-row-top {
-      grid-template-columns: auto 1fr auto;
-    }
-  }
-
   .project-name {
     color: var(--text);
     font-size: 1.1875rem;
@@ -88,16 +81,9 @@ const href = getProjectHref(project);
     letter-spacing: -0.015em;
   }
 
-  .project-kind {
-    color: var(--text-faint);
-    font-size: var(--size-meta);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
   .project-year,
   .project-read-time {
-    font-family: var(--font-mono);
+    font-family: var(--font-sans);
     font-variant-numeric: tabular-nums;
   }
 

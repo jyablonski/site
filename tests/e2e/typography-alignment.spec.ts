@@ -1,18 +1,21 @@
 import { test, expect } from "@playwright/test";
 import {
-  expectMonospaceFont,
+  expectSansFont,
   pickBoxStyles,
   pickMetaStyles,
   pickStyles,
 } from "./helpers/styles";
 
 test.describe("typography alignment", () => {
-  test("home featured projects match projects index row typography", async ({
-    page,
-  }) => {
+  test("home featured work matches index row typography", async ({ page }) => {
     await page.goto("/");
     const featuredName = await pickStyles(page, ".featured-list .project-name");
     const featuredRow = await pickStyles(page, ".featured-list .project-row");
+    const featuredPostTitle = await pickStyles(
+      page,
+      ".featured-list .post-title",
+    );
+    const featuredPostRow = await pickStyles(page, ".featured-list .post-row");
 
     await page.goto("/projects/");
     const projectName = await pickStyles(page, ".project-row .project-name");
@@ -22,6 +25,15 @@ test.describe("typography alignment", () => {
     expect(featuredName.fontWeight).toBe(projectName.fontWeight);
     expect(featuredRow.paddingLeft).toBe(projectRow.paddingLeft);
     expect(featuredRow.paddingRight).toBe(projectRow.paddingRight);
+
+    await page.goto("/posts/");
+    const postTitle = await pickStyles(page, ".post-row .post-title");
+    const postRow = await pickStyles(page, ".post-row");
+
+    expect(featuredPostTitle.fontSize).toBe(postTitle.fontSize);
+    expect(featuredPostTitle.fontWeight).toBe(postTitle.fontWeight);
+    expect(featuredPostRow.paddingLeft).toBe(postRow.paddingLeft);
+    expect(featuredPostRow.paddingRight).toBe(postRow.paddingRight);
   });
 
   test("entry-row list titles share size and horizontal padding", async ({
@@ -57,9 +69,19 @@ test.describe("typography alignment", () => {
     expect(projectMeta.textAlign).toBe("right");
   });
 
-  test("project years and read times use monospace on the projects index", async ({
+  test("list dates and read times use the unslashed-zero sans font", async ({
     page,
   }) => {
+    await page.goto("/posts/");
+    const postDate = await pickBoxStyles(page.locator(".post-date").first());
+    const postReadTime = await pickBoxStyles(
+      page.locator(".post-read-time").first(),
+    );
+
+    expectSansFont(postDate.fontFamily);
+    expectSansFont(postReadTime.fontFamily);
+    expect(postDate.fontSize).toBe(postReadTime.fontSize);
+
     await page.goto("/projects/");
     const projectYear = await pickBoxStyles(
       page.locator(".project-year").first(),
@@ -68,8 +90,8 @@ test.describe("typography alignment", () => {
       page.locator(".project-read-time").first(),
     );
 
-    expectMonospaceFont(projectYear.fontFamily);
-    expectMonospaceFont(projectReadTime.fontFamily);
+    expectSansFont(projectYear.fontFamily);
+    expectSansFont(projectReadTime.fontFamily);
     expect(projectYear.fontSize).toBe(projectReadTime.fontSize);
   });
 

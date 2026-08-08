@@ -4,7 +4,7 @@ year: "2025 - present"
 kind: Full-stack app
 summary: Journaling app with a Next.js frontend, Go gRPC backend, and Python ML + LLM service built as a sandbox for testing microservices, observability, and MLOps patterns.
 tags: [Go, Next.js, Python, Dagster]
-featured: true
+featured: false
 repo: https://github.com/jyablonski/lotus
 ---
 
