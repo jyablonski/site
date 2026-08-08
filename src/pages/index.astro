@@ -1,13 +1,19 @@
 ---
+import PostRow from "../components/PostRow.astro";
 import ProjectRow from "../components/ProjectRow.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { homeContent } from "../data/site";
 import { site } from "../data/site";
-import { loadProjects } from "../lib/content";
+import { loadProjects, loadPublishedPosts } from "../lib/content";
+import { getPostBySlug } from "../lib/posts";
 import { getFeaturedProjects } from "../lib/projects";
 
-const projects = await loadProjects();
-const featured = getFeaturedProjects(projects, 3);
+const [projects, posts] = await Promise.all([
+  loadProjects(),
+  loadPublishedPosts(),
+]);
+const featuredProjects = getFeaturedProjects(projects, 2);
+const featuredPost = getPostBySlug(posts, "tips-for-effective-dbt-slim-ci");
 const stackLine = homeContent.stack.join(" · ");
 ---
 
@@ -26,11 +32,23 @@ const stackLine = homeContent.stack.join(" · ");
   <section class="featured" aria-labelledby="featured-heading">
     <div class="featured-header">
       <h2 id="featured-heading" class="section-label">Featured work</h2>
-      <a class="see-all" href="/projects/">See all →</a>
+      <a class="see-all" href="/projects/">See more →</a>
     </div>
     <hr class="hairline" />
     <div class="featured-list">
-      {featured.map((project) => <ProjectRow project={project} />)}
+      {
+        featuredProjects[0] && (
+          <ProjectRow project={featuredProjects[0]} kindLabel="Project" />
+        )
+      }
+      {featuredPost && <PostRow post={featuredPost} kindLabel="Post" />}
+      {
+        featuredProjects
+          .slice(1)
+          .map((project) => (
+            <ProjectRow project={project} kindLabel="Project" />
+          ))
+      }
     </div>
   </section>
 </BaseLayout>
@@ -73,7 +91,7 @@ const stackLine = homeContent.stack.join(" · ");
     text-underline-offset: 3px;
   }
 
-  .featured-list :global(.project-row:first-child) {
+  .featured-list :global(.entry-row:first-child) {
     border-top: none;
   }
 </style>

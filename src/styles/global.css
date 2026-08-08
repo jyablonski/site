@@ -114,6 +114,7 @@ a:hover {
   font-size: var(--size-chip);
   letter-spacing: 0.01em;
   padding: 0.2rem 0.55rem;
+  text-transform: lowercase;
 }
 
 .tag-row {
@@ -160,6 +161,19 @@ a:hover {
   display: grid;
   gap: 0.5rem 1rem;
   grid-template-columns: 1fr auto;
+}
+
+.entry-row-kind {
+  color: var(--text-faint);
+  font-size: var(--size-meta);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 521px) {
+  .entry-row-top--with-kind {
+    grid-template-columns: auto 1fr auto;
+  }
 }
 
 .entry-row-mid {

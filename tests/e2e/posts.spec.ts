@@ -16,3 +16,16 @@ test("posts index lists published posts newest first", async ({ page }) => {
   expect(dates).toEqual([...dates].sort((a, b) => b.localeCompare(a)));
   expect(new Set(posts.map((post) => post.href)).size).toBe(posts.length);
 });
+
+test("topic filters and post tags use lowercase labels", async ({ page }) => {
+  await page.goto("/posts/");
+
+  await expect(page.locator(".topic-chips .chip-link").first()).toHaveCSS(
+    "text-transform",
+    "lowercase",
+  );
+  await expect(page.locator(".post-tags .chip").first()).toHaveCSS(
+    "text-transform",
+    "lowercase",
+  );
+});

@@ -44,8 +44,11 @@ export async function pickMetaStyles(
   });
 }
 
-export function expectMonospaceFont(fontFamily: string): void {
-  expect(fontFamily.toLowerCase()).toMatch(/geist mono|ui-monospace|monospace/);
+export function expectSansFont(fontFamily: string): void {
+  expect(fontFamily.toLowerCase()).toMatch(
+    /geist variable|system-ui|sans-serif/,
+  );
+  expect(fontFamily.toLowerCase()).not.toContain("geist mono");
 }
 
 export async function pickStyles(

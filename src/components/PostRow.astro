@@ -4,15 +4,23 @@ import { formatPostDate, getPostHref } from "../lib/posts";
 
 interface Props {
   post: PostEntry;
+  kindLabel?: string;
 }
 
-const { post } = Astro.props;
+const { post, kindLabel } = Astro.props;
 const href = getPostHref(post);
 ---
 
 <a class="entry-row post-row" href={href}>
-  <div class="entry-row-top post-row-top">
+  <div
+    class:list={[
+      "entry-row-top",
+      "post-row-top",
+      kindLabel && "entry-row-top--with-kind",
+    ]}
+  >
     <h2 class="post-title">{post.title}</h2>
+    {kindLabel && <span class="entry-row-kind post-kind">{kindLabel}</span>}
     <span class="entry-row-meta post-meta meta">
       <time class="post-date" datetime={formatPostDate(post.date)}>
         {formatPostDate(post.date)}
@@ -47,7 +55,7 @@ const href = getPostHref(post);
 
   .post-date,
   .post-read-time {
-    font-family: var(--font-mono);
+    font-family: var(--font-sans);
     font-variant-numeric: tabular-nums;
   }
 
