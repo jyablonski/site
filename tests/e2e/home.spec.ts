@@ -12,12 +12,12 @@ test("home page shows hero heading and featured work", async ({ page }) => {
     page.getByText(/Data engineer in Southern California/i),
   ).toBeVisible();
   await expect(
-    page.locator(".project-name", { hasText: "NBA ELT Pipeline" }),
+    page.locator(".project-name", { hasText: "Baseline" }),
   ).toBeVisible();
   const featuredRows = page.locator(".featured-list .entry-row");
   await expect(featuredRows).toHaveCount(3);
   await expect(featuredRows.nth(0).locator(".project-name")).toHaveText(
-    "NBA ELT Pipeline",
+    "Baseline",
   );
   await expect(featuredRows.nth(0).locator(".project-kind")).toHaveText(
     "Project",
