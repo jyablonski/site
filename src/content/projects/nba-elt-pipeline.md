@@ -1,80 +1,72 @@
 ---
-name: NBA ELT Pipeline
+name: Baseline
 year: "2021 - present"
-kind: Data platform
-summary: An end-to-end NBA analytics platform with ingestion, dbt models, REST API, and a dashboard for season metrics, insights, and ML-powered win predictions, all hosted on cloud infrastructure.
-tags: [Python, dbt, Terraform, AWS]
+kind: Full-stack app
+summary: A full-stack NBA analytics platform with a Postgres warehouse, FastAPI API, Cube semantic layer, MCP tools, predictive models, and a Next.js web app.
+tags: [Python, Next.js, FastAPI, dbt, Docker]
 featured: true
-site: https://nbadashboard.jyablonski.dev
-repo: https://github.com/jyablonski/nba_elt_ingestion
+site: https://baseline.jyablonski.dev
+repo: https://github.com/jyablonski/baseline
 ---
 
 ## What it is
 
-A personal, production-grade data platform for NBA season analytics: daily ingestion, SQL transformations, ML win predictions, a public REST API, and an interactive web dashboard. Infrastructure is managed with Terraform on AWS, with Step Functions being used for pipeline orchestration for near-zero cost.
+[Baseline](https://baseline.jyablonski.dev) is a full-stack NBA analytics platform that combines data collection, a Postgres warehouse, predictive modeling, APIs, AI tools, and a public web app in a single monorepo. It is the v2 evolution of the NBA ELT project I've been hosting in different forms since 2021.
 
-Full architecture write-up: [NBA Project on Doqs](https://doqs.jyablonski.dev/architecture/nba_project/).
+The platform includes multiple components for data ingestion, transformation, modeling, API serving, semantic layer, AI tools, and web presentation to serve enriched analytics and insights to users.
 
 ## What it does
 
-- Ingests raw data from basketball-reference, DraftKings, Reddit, and (historically) Twitter into Postgres bronze tables, with S3 backups for redundancy
-- Transforms data through a medallion architecture (bronze → silver → gold) using dbt, with dbt-expectations for data quality testing
-- Predicts daily game win probabilities with a logistic regression model using recent team performance, rest days, and active injuries as features
-- Serves gold marts through a Lambda-hosted REST API ([api.jyablonski.dev](https://api.jyablonski.dev)) and a Dash frontend ([nbadashboard.jyablonski.dev](https://nbadashboard.jyablonski.dev))
-- Runs daily on a single pipeline (ingestion → dbt → ML), with feature flags that control which sources get scraped based on the season schedule
+- Scrapes Basketball-Reference for players, teams, schedules, games, box scores, play-by-play, standings, contracts, injuries, and transactions, with optional Odds API and Reddit integrations
+- Manages raw source tables with a migration tool called Alembic, then builds cleaned `silver` models and analytics-ready `gold` marts with dbt
+- Serves players, teams, standings, schedules, game flow, social data, transactions, and player comparisons through a FastAPI REST API
+- Provides a Next.js web app with pages for browsing players and teams, comparing players, exploring schedules and game flow, reading relevant Reddit social data, and asking bounded natural-language questions
+- Uses Cube as a governed semantic layer for the Ask page and FastMCP tools, so both interfaces query named analytics operations instead of generating free-form SQL
+- Scores upcoming games with a pregame Elo model and a logit challenger, keeping predictions in the warehouse for evaluation and future product work
 
 ```mermaid
 flowchart LR
-  SRC[External sources]
+  SRC[Basketball-Reference<br/>Optional: Odds API · Reddit] --> SCRAPER[Scraper]
 
-  subgraph aws [AWS]
-    SF[Step Functions]
-
-    subgraph pipeline [Daily ECS pipeline]
-      ING[Ingestion]
-      DBT[dbt]
-      ML[ML]
-    end
-
-    subgraph serve [User-facing Apps]
-      API[REST API]
-      DASH[Web Dashboard]
-    end
+  subgraph PG [Postgres warehouse]
+    SOURCE[(source)]
+    MODELS[(dbt<br/>silver / gold)]
+    SOURCE --> MODELS
   end
 
-  SRC --> pipeline
-  SF -.-> pipeline
-  ING --> DBT --> ML
-  ML --> serve
+  SCRAPER --> SOURCE
+  MODELS --> API[FastAPI REST API] --> WEB[Next.js web app]
+  MODELS --> CUBE[Cube semantic layer] --> ASK[Ask + MCP]
+  MODELS --> ML[ML + Elo jobs] --> SOURCE
 ```
 
 ## Why I built it
 
-I wanted a real end-to-end analytics product, not a notebook or a single script, with scheduling, testing, IAM, and something I could show in interviews. NBA data was a fun domain with messy sources, including APIs that block AWS IPs and force custom scraping solutions. Keeping monthly spend around $1 on the AWS free tier made cost discipline part of the design from day one.
+I've always been interested in sports and wanted to build out my own application for exploring and analyzing NBA data while honing my data skills.
 
-I've been hosting 24/7 in various forms since 2021, and it's evolved a lot over time. Initially I was focused on the data side and delivering a simple dashboard with valuable stats, but over time I started adding more features, like the Reddit scraping or ML predictions, new services like the REST API, and improving the infrastructure with Terraform, CI/CD, and real integration testing. It's been a great learning experience across the full stack of data engineering, machine learning, and cloud architecture.
+The original project was intentionally split across several repositories while I learned data engineering, machine learning, AWS, and infrastructure. V2 was a chance to consolidate those pieces into a monorepo, replace the Dash dashboard with a more capable Next.js application, and build a cleaner product around the data instead of treating the dashboard as the finish line.
 
-## What I would do differently
+NBA data is a useful domain because it combines structured statistics with messy real-world sources. Contracts, injuries, transactions, play-by-play, standings, and social data all have different shapes and failure modes, which makes the project a good test bed for identity matching across source systems and handling messy data while working on something fun.
 
-The biggest thing I would change is to move to a monorepo. I wasn't familiar with these or the value of them when I started, and I structured the project as multiple separate repos for ingestion, dbt, ML, API, and dashboard. This works, but adds a lot of overhead and maintenance burden that's tricky to keep in sync. A monorepo with clear structure and tooling would make development smoother and significantly reduce the cognitive load of jumping between repos for related changes.
+## What changed in v2
 
-- I plan to make this change at some point when I start hosting the project in my homelab.
-
-The other thing I'd want to do differently is figure out a better orchestration solution. Step Functions works to trigger the ECS jobs that make up the pipeline and it doesn't cost anything, but I'm very limited in how I can chain tasks together, get error alerting, or add small Python-based steps that don't need a full dedicated container.
-
-- Airflow or Dagster are too expensive to self-host on cloud infrastructure for a personal project.
-- Self-hosting Dagster in my homelab and making that swap around the same time I pivot the project to a monorepo would be a good opportunity, so knocking both of those problems out in one go could be a good move.
+- Consolidated the scraper, database migrations, dbt project, ML jobs, API, frontend, Cube model, and MCP server into one repository
+- Replaced the Dash frontend with a Next.js app focused on exploration: player and team profiles, comparisons, schedule, standings, game flow, social data, and more
+- Added a Cube semantic layer so natural-language queries and external AI assistants share the same governed measures and dimensions
+- Added a FastMCP server with tools for dynamically fetching data in my own harnesses (and in a future state: an external AI assistant in the app)
+- Reworked and simplified deployment considerably to Docker Compose on a free-tier cloud VM.
+- Expanded the warehouse with contracts, payroll, injuries, transactions, play-by-play, game flow, social data, and model evaluation marts
 
 ## Tech stack
 
-| Layer       | Tools                                                                                |
-| ----------- | ------------------------------------------------------------------------------------ |
-| Ingestion   | Python, Pandas, SQLAlchemy                                                           |
-| Transform   | dbt, dbt-expectations, Postgres                                                      |
-| ML          | Python, scikit-learn                                                                 |
-| API         | FastAPI, AWS Lambda, CloudFront                                                      |
-| Dashboard   | Dash, Plotly                                                                         |
-| Infra       | Terraform (custom modules), ECS Fargate, Step Functions, RDS, S3                     |
-| Shared libs | [jyablonski_common_modules](https://github.com/jyablonski/jyablonski_common_modules) |
-
-Related repos: [dbt](https://github.com/jyablonski/nba_elt_dbt), [ML](https://github.com/jyablonski/nba_elt_mlflow), [REST API](https://github.com/jyablonski/nba_elt_rest_api), [Dash](https://github.com/jyablonski/nba_elt_dashboard), [Terraform](https://github.com/jyablonski/aws_terraform).
+| Layer             | Tools                                    |
+| ----------------- | ---------------------------------------- |
+| Scraping          | Python, Click, BeautifulSoup, Requests   |
+| Database          | PostgreSQL, SQLAlchemy, Alembic          |
+| Transform         | dbt, staging/intermediate/gold models    |
+| ML                | Python, Elo, logit challenger            |
+| API               | FastAPI, Pydantic                        |
+| Frontend          | Next.js, TypeScript, TanStack Query      |
+| Semantic / AI     | Cube, FastMCP                            |
+| Local development | Docker Compose, Tilt                     |
+| Production        | Docker, Caddy, GitHub Actions, host cron |
